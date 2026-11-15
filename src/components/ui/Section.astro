@@ -1,0 +1,44 @@
+---
+/**
+ * Page section = one "chapter" on the timeline. `marker` renders a chapter
+ * label with a red marker tick (like a Premiere sequence marker).
+ * Put a Heading with id={`${id}-title`} (or pass `labelledBy`) inside.
+ */
+import clsx from "clsx";
+
+const toneVariants = {
+  ink: "bg-ink",
+  panel: "bg-panel",
+} as const;
+
+interface Props {
+  id: string;
+  /** Defaults to `${id}-title`. */
+  labelledBy?: string;
+  /** Chapter label, e.g. "02 — Services". Rendered uppercase. */
+  marker?: string;
+  tone?: keyof typeof toneVariants;
+  class?: string;
+}
+
+const { id, labelledBy = `${id}-title`, marker, tone = "ink", class: className } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledBy}
+  class={clsx("border-t border-line", toneVariants[tone])}
+>
+  <div class={clsx("mx-auto max-w-content px-gutter py-section", className)}>
+    {marker && (
+      <p class="mb-8 flex items-center gap-3 font-mono text-label text-muted uppercase">
+        <span aria-hidden="true" class="flex flex-col items-center">
+          <span class="size-2 rotate-45 rounded-xs bg-playhead" />
+          <span class="-mt-1 h-3 w-px bg-playhead" />
+        </span>
+        {marker}
+      </p>
+    )}
+    <slot />
+  </div>
+</section>

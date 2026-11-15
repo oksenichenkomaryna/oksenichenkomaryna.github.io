@@ -18,8 +18,14 @@
     "runtimeMinutes": { "min": 30, "max": 30 },
     "relatedReview": "miles-b-interview",
     "relatedServices": ["multicamera-editing"],
-    "media": { "status": "needs-asset", "request": "Poster frame + 20–30 s excerpt showing angle switches (needs client permission)." },
-    "factBasis": ["FACTS.md › Work history: Multi-angle interview edits (2–3 cameras, 30 min)", "FACTS.md › Review, Miles B., \"Edit together a 30 minute interview\""]
+    "media": {
+      "status": "needs-asset",
+      "request": "Poster frame + 20–30 s excerpt showing angle switches (needs client permission)."
+    },
+    "factBasis": [
+      "FACTS.md › Work history: Multi-angle interview edits (2–3 cameras, 30 min)",
+      "FACTS.md › Review, Miles B., \"Edit together a 30 minute interview\""
+    ]
   },
   {
     "id": "expert-interviews-next-day",
@@ -38,8 +44,13 @@
     "runtimeMinutes": { "min": 16, "max": 19 },
     "turnaround": "Next day (urgent)",
     "relatedServices": ["multicamera-editing", "podcast-editing"],
-    "media": { "status": "needs-asset", "request": "Poster frame + short excerpt from one expert interview." },
-    "factBasis": ["FACTS.md › Work history: Expert interview edits (16–19 min, incl. urgent next-day delivery)"]
+    "media": {
+      "status": "needs-asset",
+      "request": "Poster frame + short excerpt from one expert interview."
+    },
+    "factBasis": [
+      "FACTS.md › Work history: Expert interview edits (16–19 min, incl. urgent next-day delivery)"
+    ]
   },
   {
     "id": "podcast-audio-video-zencastr",
@@ -59,7 +70,10 @@
     "recordingPlatform": "Zencastr",
     "scope": ["audio", "video"],
     "relatedServices": ["podcast-editing"],
-    "media": { "status": "needs-asset", "request": "Poster frame + 15–30 s clip of the finished episode." },
+    "media": {
+      "status": "needs-asset",
+      "request": "Poster frame + 15–30 s clip of the finished episode."
+    },
     "factBasis": ["FACTS.md › Work history: Podcast audio + video editing (Zencastr recordings)"]
   },
   {
@@ -79,8 +93,14 @@
     "scope": ["audio"],
     "relatedReview": "dan-r-podcast-audio",
     "relatedServices": ["podcast-editing"],
-    "media": { "status": "needs-asset", "request": "Before/after audio pair (10–15 s each) of the static removal." },
-    "factBasis": ["FACTS.md › Work history: Background static removal", "FACTS.md › Review, Dan R., \"Cleanup background audio static from video podcast\""]
+    "media": {
+      "status": "needs-asset",
+      "request": "Before/after audio pair (10–15 s each) of the static removal."
+    },
+    "factBasis": [
+      "FACTS.md › Work history: Background static removal",
+      "FACTS.md › Review, Dan R., \"Cleanup background audio static from video podcast\""
+    ]
   },
   {
     "id": "zoom-interview-short-clips",
@@ -99,8 +119,14 @@
     "format": "short-clips",
     "source": "Zoom recording",
     "relatedServices": ["podcast-editing", "social-video-ads"],
-    "media": { "status": "needs-asset", "request": "1–2 of the short clips (vertical if that was the format) + poster frame." },
-    "factBasis": ["FACTS.md › Work history: Zoom interview → short clips", "FACTS.md › Services 1: short-form clips from long podcasts"]
+    "media": {
+      "status": "needs-asset",
+      "request": "1–2 of the short clips (vertical if that was the format) + poster frame."
+    },
+    "factBasis": [
+      "FACTS.md › Work history: Zoom interview → short clips",
+      "FACTS.md › Services 1: short-form clips from long podcasts"
+    ]
   },
   {
     "id": "eight-videos-three-days",
@@ -119,8 +145,13 @@
     "output": "8 × 3-min videos in 3 days with lower thirds and subtitles",
     "batch": { "count": 8, "minutesEach": 3, "turnaroundDays": 3 },
     "relatedServices": ["online-course-editing", "software-tutorials"],
-    "media": { "status": "needs-asset", "request": "Poster frame from 1–2 videos of the batch showing lower thirds + subtitles. Confirm topic/category." },
-    "factBasis": ["FACTS.md › Work history: 8 × 3-min videos in 3 days with lower thirds + subtitles"]
+    "media": {
+      "status": "needs-asset",
+      "request": "Poster frame from 1–2 videos of the batch showing lower thirds + subtitles. Confirm topic/category."
+    },
+    "factBasis": [
+      "FACTS.md › Work history: 8 × 3-min videos in 3 days with lower thirds + subtitles"
+    ]
   },
   {
     "id": "faceless-video",
@@ -138,7 +169,10 @@
     "output": "Faceless video edits",
     "format": "faceless",
     "relatedServices": ["social-video-ads"],
-    "media": { "status": "needs-asset", "request": "One faceless video excerpt + poster frame. Confirm platform (YouTube / social)." },
+    "media": {
+      "status": "needs-asset",
+      "request": "One faceless video excerpt + poster frame. Confirm platform (YouTube / social)."
+    },
     "factBasis": ["FACTS.md › Work history: Faceless video editing"]
   }
 ]

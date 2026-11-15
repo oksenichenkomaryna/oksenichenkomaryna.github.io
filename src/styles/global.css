@@ -1,0 +1,171 @@
+/*
+ * Design tokens — SINGLE SOURCE OF TRUTH (lead-owned; subagents request changes).
+ * Concept: A "Timeline" + C hard cuts + B waveform (see CONCEPTS.md).
+ * Motion tokens mirror src/lib/motion.ts — change both together.
+ */
+@import "tailwindcss";
+
+/* Dark-only concept: `dark:` variant intentionally unused. */
+
+@theme {
+  /* ---------- Colors (edit-suite palette) ---------- */
+  --color-*: initial;
+  --color-ink: #0e0f12; /* page background */
+  --color-panel: #17191e; /* cards, tracks */
+  --color-panel-raised: #1f2229; /* hover / raised panels */
+  --color-line: #2a2d35; /* rules, track dividers */
+  --color-paper: #eceae4; /* primary text — 15.9:1 on ink */
+  --color-muted: #8b8f99; /* secondary text — 5.9:1 on ink, 5.4:1 on panel */
+  --color-playhead: #ff3b30; /* single hot accent — ink text on it 5.4:1; white fails (3.6:1) */
+  --color-playhead-hover: #ff5a50;
+  --color-clip-v: #5b7cfa; /* video-track accent — 5.2:1 on ink */
+  --color-clip-a: #3ddc97; /* audio-track accent — 10.8:1 on ink */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* ---------- Fonts ---------- */
+  --font-display: "Inter Tight Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* ---------- Fluid type scale (min @ 360px → max @ 1440px) ---------- */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.55;
+  --text-body: clamp(1rem, 0.95rem + 0.22vw, 1.125rem);
+  --text-body--line-height: 1.6;
+  --text-lead: clamp(1.125rem, 1.03rem + 0.42vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-h3: clamp(1.25rem, 1.1rem + 0.67vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-h2: clamp(2rem, 1.6rem + 1.78vw, 3.5rem);
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.02em;
+  --text-display: clamp(2.5rem, 1.6rem + 4vw, 6rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.035em;
+
+  /* ---------- Spacing extras (base --spacing stays 0.25rem) ---------- */
+  --spacing-gutter: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+  --spacing-section: clamp(5rem, 3.5rem + 6.5vw, 10rem);
+  --spacing-ruler: 2.75rem; /* sticky timeline ruler height */
+  --container-content: 80rem;
+  --container-prose: 40rem;
+
+  /* ---------- Radii (editor UI = small radii) ---------- */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-pill: 9999px;
+
+  /* ---------- Shadows ---------- */
+  --shadow-panel: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -12px rgb(0 0 0 / 0.6);
+  --shadow-playhead: 0 0 0 1px rgb(255 59 48 / 0.6), 0 0 24px rgb(255 59 48 / 0.35);
+
+  /* ---------- Breakpoints ---------- */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+
+  /* ---------- Z-index scale (use as z-(--z-ruler)) ---------- */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-overlay: 30;
+  --z-ruler: 40;
+  --z-cut: 50; /* one-frame cut overlay */
+  --z-skip: 60;
+
+  /* ---------- Motion (mirror of src/lib/motion.ts) ---------- */
+  /* Eases: cubic-bezier equivalents of the GSAP eases in motion.ts */
+  --ease-cut: cubic-bezier(0.165, 0.84, 0.44, 1); /* gsap power3.out */
+  --ease-trim: cubic-bezier(0.215, 0.61, 0.355, 1); /* gsap power2.out */
+  --ease-snap: cubic-bezier(0.19, 1, 0.22, 1); /* gsap expo.out */
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1); /* gsap power2.inOut */
+  /* Durations (use as duration-(--duration-fast)) */
+  --duration-frame: 80ms; /* one-frame hard cut */
+  --duration-fast: 160ms;
+  --duration-base: 320ms;
+  --duration-slow: 640ms;
+  --duration-reveal: 900ms;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: calc(var(--spacing-ruler) + 1rem);
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-playhead);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background-color: var(--color-playhead);
+    color: var(--color-ink);
+  }
+
+  /* Lenis: recommended base styles */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/*
+ * JS-gated initial states: elements marked data-reveal start hidden ONLY when
+ * JS + motion are available (html.js-motion is set inline in <head> before paint).
+ * Without JS or with reduced motion, content is fully visible.
+ */
+@layer base {
+  html.js-motion [data-reveal] {
+    opacity: 0;
+  }
+}

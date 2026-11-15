@@ -1,0 +1,39 @@
+---
+/**
+ * Mono `HH:MM:SS:FF` readout (25 fps by default). Decorative unless `label`
+ * is given; then screen readers get the label instead of digit soup.
+ */
+import clsx from "clsx";
+import { TIMECODE_FPS } from "../../lib/motion";
+import { formatTimecode } from "./timecode";
+
+const toneVariants = {
+  muted: "text-muted",
+  paper: "text-paper",
+  playhead: "text-playhead",
+} as const;
+
+interface Props {
+  seconds: number;
+  fps?: number;
+  /** Accessible text, e.g. "Runtime 30 minutes". Omit for purely decorative timecode. */
+  label?: string;
+  tone?: keyof typeof toneVariants;
+  class?: string;
+}
+
+const { seconds, fps = TIMECODE_FPS, label, tone = "muted", class: className } = Astro.props;
+const value = formatTimecode(seconds, fps);
+const classes = clsx("font-mono text-label tabular-nums", toneVariants[tone], className);
+---
+
+{label ? (
+  <span class={classes}>
+    <span class="sr-only">{label}</span>
+    <span aria-hidden="true">{value}</span>
+  </span>
+) : (
+  <span class={classes} aria-hidden="true">
+    {value}
+  </span>
+)}

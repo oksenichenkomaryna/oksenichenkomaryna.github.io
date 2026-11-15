@@ -5,7 +5,7 @@
 - Upwork title: Expert video/audio editor with Adobe Premiere Pro
 - Experience: 6 years · Adobe Creative Cloud (Premiere Pro, After Effects, Photoshop)
 - Upwork stats: 100% Job Success · 5.0 rating (14 reviews) · 24 total jobs
-- Rate: $20/hr — DECISION: show as "from $X" starting price; X not yet provided — hidden until given
+- Rate: $20/hr — DECISION: show as "from $20/hr" (2026-11-15)
 - Languages: English, Polish, Ukrainian, Russian
 - Positioning (her words, to be rewritten tighter): turns raw footage, audio and graphics into
   engaging videos that show a brand's personality and values; communication is a cornerstone
@@ -57,3 +57,4 @@ Podcast, Rotoscoping, After Effects
 ## Decisions (2026-11-15)
 - Buyer priority: all four — Podcasters, Course creators / SaaS, Brands / social ads, Real estate (in that order)
 - No media yet: build with typed "needs-asset" placeholders
+- Concept: A "Timeline" + C one-frame hard cuts + B waveform for audio before/after

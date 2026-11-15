@@ -1,0 +1,87 @@
+---
+/**
+ * Renders <a> when `href` is set, otherwise <button>.
+ * Primary is ink-on-playhead (5.4:1); white on playhead fails contrast.
+ */
+import clsx from "clsx";
+import type { HTMLAttributes } from "astro/types";
+
+const variantClasses = {
+  primary: "bg-playhead text-ink hover:bg-playhead-hover",
+  secondary: "border border-line text-paper hover:border-paper hover:bg-panel",
+  ghost: "text-paper hover:bg-panel-raised",
+} as const;
+
+const sizeClasses = {
+  sm: "h-9 gap-1.5 px-3 text-body-sm",
+  md: "h-11 gap-2 px-5 text-body-sm",
+  lg: "h-14 gap-2.5 px-7 text-body",
+} as const;
+
+interface Common {
+  variant?: keyof typeof variantClasses;
+  size?: keyof typeof sizeClasses;
+  class?: string;
+}
+
+type LinkProps = Common &
+  Omit<HTMLAttributes<"a">, "class"> & {
+    href: string;
+    /** Opens in a new tab and announces it to screen readers. */
+    external?: boolean;
+  };
+
+type ButtonProps = Common &
+  Omit<HTMLAttributes<"button">, "class"> & {
+    href?: undefined;
+    external?: undefined;
+  };
+
+type Props = LinkProps | ButtonProps;
+
+const {
+  variant = "primary",
+  size = "md",
+  class: className,
+  external = false,
+  ...rest
+} = Astro.props;
+
+const classes = clsx(
+  "group inline-flex shrink-0 items-center justify-center rounded-sm font-medium whitespace-nowrap",
+  "disabled:pointer-events-none disabled:opacity-50",
+  "motion-safe:transition-[translate,background-color,border-color,color] motion-safe:duration-(--duration-fast) motion-safe:ease-cut motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0",
+  variantClasses[variant],
+  sizeClasses[size],
+  className,
+);
+const hasIcon = Astro.slots.has("icon");
+const iconClass =
+  "inline-flex motion-safe:transition-transform motion-safe:duration-(--duration-fast) motion-safe:ease-cut motion-safe:group-hover:translate-x-0.5";
+---
+
+{rest.href !== undefined ? (
+  <a
+    {...rest}
+    class={classes}
+    target={external ? "_blank" : rest.target}
+    rel={external ? "noopener" : rest.rel}
+  >
+    <slot />
+    {external && <span class="sr-only"> (opens in new tab)</span>}
+    {hasIcon && (
+      <span class={iconClass} aria-hidden="true">
+        <slot name="icon" />
+      </span>
+    )}
+  </a>
+) : (
+  <button type="button" {...rest} class={classes}>
+    <slot />
+    {hasIcon && (
+      <span class={iconClass} aria-hidden="true">
+        <slot name="icon" />
+      </span>
+    )}
+  </button>
+)}

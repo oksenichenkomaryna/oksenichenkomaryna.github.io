@@ -1,0 +1,81 @@
+---
+/**
+ * Social / contact links from the `links` collection. Upwork (primary) first.
+ * Icon-only links use the collection's ariaLabel; with visible labels the
+ * accessible name is the visible label (+ new-tab hint) to satisfy WCAG 2.5.3.
+ */
+import { getCollection, type CollectionEntry } from "astro:content";
+import clsx from "clsx";
+import Icon from "./Icon.astro";
+import type { IconName } from "./icons";
+
+type Platform = CollectionEntry<"links">["data"]["platform"];
+
+const platformIcons = {
+  upwork: "upwork",
+  facebook: "facebook",
+  instagram: "instagram",
+  linkedin: "linkedin",
+  youtube: "youtube",
+  vimeo: "vimeo",
+  email: "mail",
+} as const satisfies Record<Platform, IconName>;
+
+const layoutVariants = {
+  row: "flex flex-wrap items-center gap-2",
+  column: "flex flex-col items-start gap-2",
+} as const;
+
+const sizeVariants = {
+  sm: { link: "min-h-9 min-w-9 text-body-sm", icon: "sm" },
+  md: { link: "min-h-11 min-w-11 text-body-sm", icon: "md" },
+} as const;
+
+interface Props {
+  layout?: keyof typeof layoutVariants;
+  size?: keyof typeof sizeVariants;
+  withLabels?: boolean;
+  class?: string;
+}
+
+const { layout = "row", size = "md", withLabels = false, class: className } = Astro.props;
+
+const links = (await getCollection("links")).sort((a, b) => {
+  const rank = (e: CollectionEntry<"links">): number =>
+    e.data.platform === "upwork" ? 0 : e.data.primary ? 1 : 2;
+  return rank(a) - rank(b);
+});
+
+const relFor = (entry: CollectionEntry<"links">): string =>
+  [...new Set(["me", "noopener", ...entry.data.rel])].join(" ");
+---
+
+<ul class={clsx(layoutVariants[layout], className)}>
+  {links.map((entry) => {
+    const isMail = entry.data.url.startsWith("mailto:");
+    return (
+      <li>
+        <a
+          href={entry.data.url}
+          target={isMail ? undefined : "_blank"}
+          rel={isMail ? undefined : relFor(entry)}
+          aria-label={withLabels ? undefined : entry.data.ariaLabel}
+          class={clsx(
+            "inline-flex items-center justify-center gap-2 rounded-sm border border-line text-muted hover:border-paper hover:text-paper",
+            "motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut",
+            sizeVariants[size].link,
+            withLabels && "px-3",
+          )}
+        >
+          <Icon name={platformIcons[entry.data.platform]} size={sizeVariants[size].icon} />
+          {withLabels && (
+            <span>
+              {entry.data.label}
+              {!isMail && <span class="sr-only"> (opens in new tab)</span>}
+            </span>
+          )}
+        </a>
+      </li>
+    );
+  })}
+</ul>

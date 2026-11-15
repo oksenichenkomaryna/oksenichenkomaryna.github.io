@@ -11,9 +11,21 @@
       "Intro and outro"
     ],
     "audience": ["podcasters", "brands"],
-    "relatedSkills": ["Podcast", "Audio Editing", "Audio Post Production", "Video Intro & Outro", "Adobe Premiere Pro"],
-    "media": { "status": "needs-asset", "request": "Poster frame + 15–30 s clip from a podcast edit (and one short clip cut from it)." },
-    "factBasis": ["FACTS.md › Services 1", "FACTS.md › Work history: podcast audio + video (Zencastr); background static removal"]
+    "relatedSkills": [
+      "Podcast",
+      "Audio Editing",
+      "Audio Post Production",
+      "Video Intro & Outro",
+      "Adobe Premiere Pro"
+    ],
+    "media": {
+      "status": "needs-asset",
+      "request": "Poster frame + 15–30 s clip from a podcast edit (and one short clip cut from it)."
+    },
+    "factBasis": [
+      "FACTS.md › Services 1",
+      "FACTS.md › Work history: podcast audio + video (Zencastr); background static removal"
+    ]
   },
   {
     "id": "social-video-ads",
@@ -28,8 +40,15 @@
     ],
     "audience": ["brands", "saas"],
     "relatedSkills": ["Video Design", "Video Color Correction", "After Effects", "Adobe Photoshop"],
-    "media": { "status": "needs-asset", "request": "One finished social ad (vertical or square) + poster frame, with permission to show it." },
-    "factBasis": ["FACTS.md › Services 2", "FACTS.md › Positioning: brand's personality and values", "FACTS.md › Skills"]
+    "media": {
+      "status": "needs-asset",
+      "request": "One finished social ad (vertical or square) + poster frame, with permission to show it."
+    },
+    "factBasis": [
+      "FACTS.md › Services 2",
+      "FACTS.md › Positioning: brand's personality and values",
+      "FACTS.md › Skills"
+    ]
   },
   {
     "id": "green-screen",
@@ -42,8 +61,16 @@
       "Rotoscoping for edges a key can't handle"
     ],
     "audience": ["brands", "educators", "saas"],
-    "relatedSkills": ["Video Color Correction", "Rotoscoping", "After Effects", "Adobe Premiere Pro"],
-    "media": { "status": "needs-asset", "request": "Before/after frame pair: raw green-screen shot vs final composite." },
+    "relatedSkills": [
+      "Video Color Correction",
+      "Rotoscoping",
+      "After Effects",
+      "Adobe Premiere Pro"
+    ],
+    "media": {
+      "status": "needs-asset",
+      "request": "Before/after frame pair: raw green-screen shot vs final composite."
+    },
     "factBasis": ["FACTS.md › Services 3", "FACTS.md › Skills: Rotoscoping, Video Color Correction"]
   },
   {
@@ -59,8 +86,14 @@
     ],
     "audience": ["podcasters", "brands", "educators"],
     "relatedSkills": ["Adobe Premiere Pro", "Video Color Correction", "Audio Editing", "Podcast"],
-    "media": { "status": "needs-asset", "request": "15–30 s clip from a 2–3 camera interview edit showing angle switches." },
-    "factBasis": ["FACTS.md › Services 4", "FACTS.md › Work history: multi-angle interview edits (2–3 cameras)"]
+    "media": {
+      "status": "needs-asset",
+      "request": "15–30 s clip from a 2–3 camera interview edit showing angle switches."
+    },
+    "factBasis": [
+      "FACTS.md › Services 4",
+      "FACTS.md › Work history: multi-angle interview edits (2–3 cameras)"
+    ]
   },
   {
     "id": "real-estate-video",
@@ -74,8 +107,16 @@
       "Audio editing"
     ],
     "audience": ["real-estate"],
-    "relatedSkills": ["Video Color Correction", "Video Intro & Outro", "Audio Editing", "Adobe Premiere Pro"],
-    "media": { "status": "needs-asset", "request": "One real-estate edit (or 20–30 s excerpt) + poster frame." },
+    "relatedSkills": [
+      "Video Color Correction",
+      "Video Intro & Outro",
+      "Audio Editing",
+      "Adobe Premiere Pro"
+    ],
+    "media": {
+      "status": "needs-asset",
+      "request": "One real-estate edit (or 20–30 s excerpt) + poster frame."
+    },
     "factBasis": ["FACTS.md › Services 5", "FACTS.md › Skills"]
   },
   {
@@ -91,8 +132,15 @@
     ],
     "audience": ["saas", "educators"],
     "relatedSkills": ["Education", "Corporate Video", "Video Design", "Adobe Premiere Pro"],
-    "media": { "status": "needs-asset", "request": "Excerpt from a software tutorial showing highlights + captions." },
-    "factBasis": ["FACTS.md › Services 6", "FACTS.md › Services 7 (text highlights, screen captures, closed captions)", "FACTS.md › Work history: lower thirds + subtitles"]
+    "media": {
+      "status": "needs-asset",
+      "request": "Excerpt from a software tutorial showing highlights + captions."
+    },
+    "factBasis": [
+      "FACTS.md › Services 6",
+      "FACTS.md › Services 7 (text highlights, screen captures, closed captions)",
+      "FACTS.md › Work history: lower thirds + subtitles"
+    ]
   },
   {
     "id": "online-course-editing",
@@ -107,7 +155,10 @@
     ],
     "audience": ["educators"],
     "relatedSkills": ["Education", "YouTube", "Video Design", "Adobe Premiere Pro"],
-    "media": { "status": "needs-asset", "request": "One course lesson excerpt with text highlights and captions." },
+    "media": {
+      "status": "needs-asset",
+      "request": "One course lesson excerpt with text highlights and captions."
+    },
     "factBasis": ["FACTS.md › Services 7", "FACTS.md › Work history: 8 × 3-min videos in 3 days"]
   }
 ]

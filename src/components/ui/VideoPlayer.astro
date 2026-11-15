@@ -1,0 +1,278 @@
+---
+/**
+ * Video in three flavours (discriminated by `source.kind`):
+ * - loop:  muted inline loop, plays only in view, poster-only under reduced
+ *          motion / Save-Data, always-visible play/pause toggle (WCAG 2.2.2).
+ * - embed: click-to-load YouTube/Vimeo facade — zero third-party requests before click.
+ * - file:  native controls with captions.
+ * Missing source → MediaPlaceholder with the same footprint.
+ */
+import { Image, getImage } from "astro:assets";
+import clsx from "clsx";
+import Icon from "./Icon.astro";
+import MediaPlaceholder from "./MediaPlaceholder.astro";
+import { embedUrl, ratioVariants, type MediaRatio, type VideoSource } from "./media";
+
+interface Props {
+  source?: VideoSource | null;
+  ratio?: MediaRatio;
+  /** LCP poster: eager + fetchpriority=high. Use for the hero only. */
+  priority?: boolean;
+  /** Responsive `sizes` for the poster image. */
+  sizes?: string;
+  placeholderLabel?: string;
+  class?: string;
+}
+
+const {
+  source,
+  ratio = "16/9",
+  priority = false,
+  sizes = "(min-width: 80rem) 80rem, 100vw",
+  placeholderLabel,
+  class: className,
+} = Astro.props;
+
+const frame = clsx(
+  "relative isolate overflow-hidden rounded-sm border border-line bg-ink",
+  ratioVariants[ratio],
+  className,
+);
+const posterClass = "absolute inset-0 size-full object-cover";
+const loading = priority ? "eager" : "lazy";
+const fetchpriority = priority ? "high" : "auto";
+
+const filePoster =
+  source?.kind === "file"
+    ? typeof source.poster === "string"
+      ? source.poster
+      : (await getImage({ src: source.poster, width: 1920 })).src
+    : undefined;
+
+const controlClass =
+  "grid place-items-center rounded-sm bg-ink/70 text-paper backdrop-blur-sm hover:bg-ink hover:text-playhead motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut";
+---
+
+{!source && <MediaPlaceholder ratio={ratio} label={placeholderLabel} class={className} />}
+
+{source?.kind === "loop" && (
+  <div class={clsx("group", frame)} data-video-loop>
+    {typeof source.poster === "string" ? (
+      <img
+        src={source.poster}
+        alt=""
+        class={posterClass}
+        loading={loading}
+        decoding="async"
+        fetchpriority={fetchpriority}
+      />
+    ) : (
+      <Image
+        src={source.poster}
+        alt=""
+        class={posterClass}
+        sizes={sizes}
+        widths={[640, 960, 1280, 1920]}
+        loading={loading}
+        fetchpriority={fetchpriority}
+      />
+    )}
+    <video
+      class={posterClass}
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-label={source.alt}
+      data-video
+    >
+      {source.webm && <source src={source.webm} type="video/webm" />}
+      <source src={source.mp4} type="video/mp4" />
+    </video>
+    <button
+      type="button"
+      class={clsx("absolute right-3 bottom-3 z-(--z-raised) size-10", controlClass)}
+      aria-label="Play video"
+      data-video-toggle
+    >
+      <Icon name="play" size="sm" class="group-data-playing:hidden" />
+      <Icon name="pause" size="sm" class="hidden group-data-playing:block" />
+    </button>
+  </div>
+)}
+
+{source?.kind === "embed" && (
+  <div
+    class={frame}
+    data-video-embed
+    data-src={embedUrl(source.provider, source.id)}
+    data-title={source.title}
+  >
+    {typeof source.poster === "string" ? (
+      <img
+        src={source.poster}
+        alt=""
+        class={posterClass}
+        loading={loading}
+        decoding="async"
+        fetchpriority={fetchpriority}
+      />
+    ) : (
+      <Image
+        src={source.poster}
+        alt=""
+        class={posterClass}
+        sizes={sizes}
+        widths={[640, 960, 1280, 1920]}
+        loading={loading}
+        fetchpriority={fetchpriority}
+      />
+    )}
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 bg-linear-to-t from-ink/80 via-ink/10 to-transparent"
+    />
+    <button
+      type="button"
+      class="group absolute inset-0 grid size-full place-items-center"
+      aria-label={`Play video: ${source.title}`}
+      data-embed-play
+    >
+      <span class="grid size-16 place-items-center rounded-pill bg-playhead text-ink shadow-playhead group-hover:bg-playhead-hover motion-safe:transition-[scale,background-color] motion-safe:duration-(--duration-fast) motion-safe:ease-snap motion-safe:group-hover:scale-110 md:size-20">
+        <Icon name="play" size="xl" />
+      </span>
+    </button>
+    <p class="pointer-events-none absolute inset-x-4 bottom-3 flex items-center justify-between gap-4 font-mono text-label text-muted uppercase">
+      <span class="truncate text-paper">{source.title}</span>
+      <span class="shrink-0">
+        Loads {source.provider === "youtube" ? "YouTube" : "Vimeo"} on play
+      </span>
+    </p>
+  </div>
+)}
+
+{source?.kind === "file" && (
+  <div class={frame}>
+    <video
+      class="absolute inset-0 size-full bg-ink object-contain"
+      controls
+      playsinline
+      preload="none"
+      poster={filePoster}
+      title={source.title}
+      aria-label={source.title}
+    >
+      {source.webm && <source src={source.webm} type="video/webm" />}
+      <source src={source.mp4} type="video/mp4" />
+      {source.captions?.map((c, i) => (
+        <track kind="captions" src={c.src} srclang={c.srclang} label={c.label} default={i === 0} />
+      ))}
+    </video>
+  </div>
+)}
+
+<script>
+  import { mq } from "../../lib/motion";
+
+  let observer: IntersectionObserver | null = null;
+  let controller: AbortController | null = null;
+
+  /** Autoplay only with motion allowed and no Save-Data (flag set pre-paint in BaseLayout). */
+  const autoplayAllowed = (): boolean =>
+    !window.matchMedia(mq.reduced).matches &&
+    !document.documentElement.classList.contains("save-data");
+
+  function setPlaying(root: HTMLElement, button: HTMLButtonElement, playing: boolean): void {
+    root.toggleAttribute("data-playing", playing);
+    button.setAttribute("aria-label", playing ? "Pause video" : "Play video");
+  }
+
+  function initLoop(root: HTMLElement, io: IntersectionObserver, signal: AbortSignal): void {
+    const video = root.querySelector<HTMLVideoElement>("[data-video]");
+    const button = root.querySelector<HTMLButtonElement>("[data-video-toggle]");
+    if (!video || !button) return;
+
+    video.addEventListener("play", () => setPlaying(root, button, true), { signal });
+    video.addEventListener("pause", () => setPlaying(root, button, false), { signal });
+    button.addEventListener(
+      "click",
+      () => {
+        if (video.paused) {
+          delete root.dataset.userPaused;
+          video.play().catch(() => setPlaying(root, button, false));
+        } else {
+          root.dataset.userPaused = "";
+          video.pause();
+        }
+      },
+      { signal },
+    );
+    io.observe(root);
+  }
+
+  function initEmbed(root: HTMLElement, signal: AbortSignal): void {
+    const button = root.querySelector<HTMLButtonElement>("[data-embed-play]");
+    const { src, title } = root.dataset;
+    if (!button || !src || !title) return;
+
+    button.addEventListener(
+      "click",
+      () => {
+        const iframe = document.createElement("iframe");
+        iframe.src = src;
+        iframe.title = title;
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.className = "absolute inset-0 size-full border-0";
+        root.replaceChildren(iframe);
+        iframe.focus();
+      },
+      { once: true, signal },
+    );
+  }
+
+  function init(): void {
+    controller ??= new AbortController();
+    const { signal } = controller;
+
+    observer ??= new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const root = entry.target as HTMLElement;
+          const video = root.querySelector<HTMLVideoElement>("[data-video]");
+          if (!video) continue;
+          if (!entry.isIntersecting) {
+            video.pause();
+          } else if (autoplayAllowed() && !("userPaused" in root.dataset)) {
+            video.play().catch(() => undefined);
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-video-loop]:not([data-initialized])",
+    )) {
+      root.dataset.initialized = "";
+      initLoop(root, observer, signal);
+    }
+    for (const root of document.querySelectorAll<HTMLElement>(
+      "[data-video-embed]:not([data-initialized])",
+    )) {
+      root.dataset.initialized = "";
+      initEmbed(root, signal);
+    }
+  }
+
+  function cleanup(): void {
+    observer?.disconnect();
+    observer = null;
+    controller?.abort();
+    controller = null;
+  }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>

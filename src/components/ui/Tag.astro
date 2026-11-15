@@ -1,0 +1,47 @@
+---
+/** Skill tag / chip. Use as="li" inside a <ul> of tags. */
+import clsx from "clsx";
+
+const variantClasses = {
+  default: "border-line text-muted",
+  video: "border-clip-v/40 text-clip-v",
+  audio: "border-clip-a/40 text-clip-a",
+  accent: "border-playhead/50 text-playhead",
+} as const;
+
+const fontClasses = {
+  mono: "font-mono text-label uppercase",
+  sans: "font-sans text-body-sm",
+} as const;
+
+/** Track variants get a small clip swatch, like a clip's label colour. */
+const dotClasses = {
+  default: "",
+  video: "bg-clip-v",
+  audio: "bg-clip-a",
+  accent: "bg-playhead",
+} as const;
+
+interface Props {
+  variant?: keyof typeof variantClasses;
+  font?: keyof typeof fontClasses;
+  as?: "span" | "li";
+  class?: string;
+}
+
+const { variant = "default", font = "mono", as: Tag = "span", class: className } = Astro.props;
+---
+
+<Tag
+  class={clsx(
+    "inline-flex items-center gap-2 rounded-xs border bg-ink/40 px-2.5 py-1",
+    variantClasses[variant],
+    fontClasses[font],
+    className,
+  )}
+>
+  {variant !== "default" && (
+    <span aria-hidden="true" class={clsx("size-1.5", dotClasses[variant])} />
+  )}
+  <slot />
+</Tag>

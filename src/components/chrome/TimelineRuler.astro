@@ -1,0 +1,164 @@
+---
+/**
+ * Global sticky "timeline ruler" (lead-owned chrome) — the signature of concept A.
+ * - Chapter markers = primary navigation (real links, keyboard accessible).
+ * - Playhead + timecode follow page scroll progress (decorative, aria-hidden).
+ * Vanilla TS + GSAP (no React) so the chrome costs no hydration on first load.
+ */
+import { getEntry } from "astro:content";
+import Icon from "../ui/Icon.astro";
+
+export interface Chapter {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  chapters: readonly Chapter[];
+}
+
+const { chapters } = Astro.props;
+const site = await getEntry("site", "main");
+const upwork = await getEntry("links", "upwork");
+if (!site || !upwork) throw new Error("site/links entries missing");
+
+const TICKS = 48; // ruler tick count — purely decorative density
+const isHome = Astro.url.pathname === "/";
+const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+---
+
+<header
+  class="sticky top-0 z-(--z-ruler) h-ruler border-b border-line bg-ink/90 backdrop-blur-md"
+  style="--progress: 0"
+  data-ruler
+>
+  <div class="mx-auto flex h-full max-w-content items-center gap-4 px-gutter">
+    <a
+      href="/"
+      class="flex shrink-0 items-center gap-2 font-display text-body-sm font-semibold tracking-tight"
+    >
+      <span class="inline-block size-2 rounded-pill bg-playhead" aria-hidden="true"></span>
+      {site.data.name.full}
+    </a>
+
+    <nav aria-label="Sections" class="@container relative hidden h-full flex-1 lg:block">
+      <!-- tick marks (decorative) -->
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 flex h-2 justify-between"
+        aria-hidden="true"
+      >
+        {Array.from({ length: TICKS }, (_, i) => (
+          <span class:list={["w-px bg-line", i % 4 === 0 ? "h-2" : "h-1 self-end"]} />
+        ))}
+      </div>
+      <ol class="relative flex h-full items-center justify-between">
+        {chapters.map((c, i) => (
+          <li>
+            <a
+              href={chapterHref(c.id)}
+              class="group flex items-center gap-1.5 rounded-xs px-1 font-mono text-label text-muted uppercase transition-colors duration-(--duration-fast) ease-trim hover:text-paper aria-[current=location]:text-paper"
+              data-chapter={c.id}
+            >
+              <span class="tabular-nums opacity-60" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {c.label}
+            </a>
+          </li>
+        ))}
+      </ol>
+      <!-- playhead (decorative): position via --progress (0–1) -->
+      <!-- arbitrary value: playhead offset = scroll progress × nav width (container query units) -->
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 w-px translate-x-[calc(var(--progress)*100cqw)] bg-playhead shadow-playhead"
+        aria-hidden="true"
+      ></div>
+    </nav>
+
+    <div class="ml-auto flex shrink-0 items-center gap-3">
+      <span
+        class="hidden font-mono text-label text-muted tabular-nums sm:inline"
+        aria-hidden="true"
+        data-timecode
+      >
+        00:00:00:00
+      </span>
+      <a
+        href={upwork.data.url}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-1.5 rounded-sm bg-playhead px-3 py-1.5 text-body-sm font-semibold text-ink transition-colors duration-(--duration-fast) ease-trim hover:bg-playhead-hover"
+      >
+        Hire on Upwork
+        <Icon name="arrow-up-right" class="size-3.5" />
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </div>
+  </div>
+  <!-- mobile progress bar (decorative) -->
+  <div
+    class="absolute inset-x-0 bottom-0 h-px origin-left scale-x-(--progress) bg-playhead lg:hidden"
+    aria-hidden="true"
+    data-progress-bar
+  ></div>
+</header>
+
+<script>
+  import { ScrollTrigger } from "../../lib/gsap";
+  import { TIMECODE_FPS } from "../../lib/motion";
+
+  /** Virtual runtime the page "plays" across, in seconds (decorative). */
+  const RUNTIME_S = 90;
+
+  function format(totalFrames: number): string {
+    const ff = totalFrames % TIMECODE_FPS;
+    const s = Math.floor(totalFrames / TIMECODE_FPS);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(ff)}`;
+  }
+
+  let triggers: ScrollTrigger[] = [];
+
+  function setup(): void {
+    const ruler = document.querySelector<HTMLElement>("[data-ruler]");
+    if (!ruler) return;
+    const timecode = ruler.querySelector<HTMLElement>("[data-timecode]");
+
+    triggers.push(
+      ScrollTrigger.create({
+        start: 0,
+        end: "max",
+        onUpdate: (self) => {
+          ruler.style.setProperty("--progress", self.progress.toFixed(4));
+          if (timecode)
+            timecode.textContent = format(Math.round(self.progress * RUNTIME_S * TIMECODE_FPS));
+        },
+      }),
+    );
+
+    // Active chapter → aria-current on its marker.
+    ruler.querySelectorAll<HTMLAnchorElement>("[data-chapter]").forEach((link) => {
+      const section = document.getElementById(link.dataset.chapter ?? "");
+      if (!section) return;
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top center",
+          end: "bottom center",
+          onToggle: (self) =>
+            self.isActive
+              ? link.setAttribute("aria-current", "location")
+              : link.removeAttribute("aria-current"),
+        }),
+      );
+    });
+  }
+
+  function teardown(): void {
+    triggers.forEach((t) => t.kill());
+    triggers = [];
+  }
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

@@ -22,7 +22,10 @@
     "title": "Revisions",
     "body": "Tell me what to change. I make the edits and keep you updated — no chasing, no guessing.",
     "proof": "miles-b-interview",
-    "factBasis": ["FACTS.md › Review, Miles B.: \"made all the changes we needed\"", "FACTS.md › Positioning: communication"]
+    "factBasis": [
+      "FACTS.md › Review, Miles B.: \"made all the changes we needed\"",
+      "FACTS.md › Positioning: communication"
+    ]
   },
   {
     "id": "delivery",
@@ -30,6 +33,9 @@
     "title": "Delivery",
     "body": "Final files, ready to publish, on time. Urgent? I have delivered next-day.",
     "proof": "dan-r-podcast-audio",
-    "factBasis": ["FACTS.md › Review, Dan R.: \"delivers on time\"", "FACTS.md › Work history: urgent next-day delivery"]
+    "factBasis": [
+      "FACTS.md › Review, Dan R.: \"delivers on time\"",
+      "FACTS.md › Work history: urgent next-day delivery"
+    ]
   }
 ]

@@ -84,8 +84,10 @@ const site = defineCollection({
       amount: z.number().positive(),
       currency: z.literal("USD"),
       unit: z.enum(["hour", "project"]),
-      /** Must stay false until client approves showing the rate. */
+      /** Client approved showing the rate (2026-11-15). */
       show: z.boolean(),
+      /** "from" renders as a starting price, e.g. "from $20/hr". */
+      display: z.enum(["exact", "from"]),
     }),
     upworkUrl: z.url(),
     verified: z.boolean(),
@@ -97,9 +99,16 @@ const site = defineCollection({
 /* positioning — singleton (id: "main")                                */
 /* ------------------------------------------------------------------ */
 
-const wordCount = (s: string): number => s.trim().split(/\s+/).filter((w) => /\w/.test(w)).length;
+const wordCount = (s: string): number =>
+  s
+    .trim()
+    .split(/\s+/)
+    .filter((w) => /\w/.test(w)).length;
 const maxWords = (n: number) =>
-  z.string().min(1).refine((s) => wordCount(s) <= n, `must be ${n} words or fewer`);
+  z
+    .string()
+    .min(1)
+    .refine((s) => wordCount(s) <= n, `must be ${n} words or fewer`);
 
 const positioning = defineCollection({
   loader: file("src/content/positioning.json"),

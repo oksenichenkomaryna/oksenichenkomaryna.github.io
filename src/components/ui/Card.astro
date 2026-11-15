@@ -1,0 +1,52 @@
+---
+/**
+ * A "clip" on a timeline track: panel surface, small radius, optional
+ * colored top edge (V1 = clip-v, A1 = clip-a). `interactive` adds a
+ * motion-safe hover lift — use it only when the card contains a link/button.
+ */
+import clsx from "clsx";
+
+const trackVariants = {
+  video: "before:bg-clip-v",
+  audio: "before:bg-clip-a",
+  none: "before:hidden",
+} as const;
+
+const paddingVariants = {
+  none: "",
+  md: "p-5",
+  lg: "p-6 md:p-8",
+} as const;
+
+const elements = ["article", "div", "li", "section"] as const;
+
+interface Props {
+  as?: (typeof elements)[number];
+  track?: keyof typeof trackVariants;
+  padding?: keyof typeof paddingVariants;
+  interactive?: boolean;
+  class?: string;
+}
+
+const {
+  as: Tag = "div",
+  track = "none",
+  padding = "md",
+  interactive = false,
+  class: className,
+} = Astro.props;
+---
+
+<Tag
+  class={clsx(
+    "relative overflow-hidden rounded-sm border border-line bg-panel shadow-panel",
+    "before:absolute before:inset-x-0 before:top-0 before:h-0.5",
+    trackVariants[track],
+    paddingVariants[padding],
+    interactive &&
+      "hover:bg-panel-raised motion-safe:transition-[translate,background-color] motion-safe:duration-(--duration-base) motion-safe:ease-cut motion-safe:hover:-translate-y-1",
+    className,
+  )}
+>
+  <slot />
+</Tag>

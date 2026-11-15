@@ -1,0 +1,37 @@
+---
+/** Star rating exposed as one image with a text label ("Rated 5.0 out of 5"). */
+import clsx from "clsx";
+import Icon from "./Icon.astro";
+
+const toneVariants = {
+  accent: "text-playhead",
+  paper: "text-paper",
+} as const;
+
+const sizeVariants = {
+  sm: "sm",
+  md: "md",
+} as const;
+
+interface Props {
+  rating?: number;
+  max?: number;
+  tone?: keyof typeof toneVariants;
+  size?: keyof typeof sizeVariants;
+  class?: string;
+}
+
+const { rating = 5, max = 5, tone = "accent", size = "sm", class: className } = Astro.props;
+const filled = Math.round(Math.min(Math.max(rating, 0), max));
+const label = `Rated ${rating.toFixed(1)} out of ${max}`;
+---
+
+<span role="img" aria-label={label} class={clsx("inline-flex items-center gap-0.5", className)}>
+  {Array.from({ length: max }, (_, i) => (
+    <Icon
+      name="star"
+      size={sizeVariants[size]}
+      class={i < filled ? toneVariants[tone] : "text-line"}
+    />
+  ))}
+</span>

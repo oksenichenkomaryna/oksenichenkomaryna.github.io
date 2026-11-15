@@ -1,0 +1,460 @@
+---
+/**
+ * Internal styleguide (noindex). Documents tokens and every UI component state.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BeforeAfter from "../components/ui/BeforeAfter";
+import Button from "../components/ui/Button.astro";
+import Card from "../components/ui/Card.astro";
+import Heading from "../components/ui/Heading.astro";
+import Icon from "../components/ui/Icon.astro";
+import MediaPlaceholder from "../components/ui/MediaPlaceholder.astro";
+import Section from "../components/ui/Section.astro";
+import SocialLinks from "../components/ui/SocialLinks.astro";
+import StarRating from "../components/ui/StarRating.astro";
+import Tag from "../components/ui/Tag.astro";
+import Timecode from "../components/ui/Timecode.astro";
+import VideoPlayer from "../components/ui/VideoPlayer.astro";
+import { iconNames } from "../components/ui/icons";
+import { ratioVariants, type MediaRatio } from "../components/ui/media";
+import { TIMECODE_FPS, duration, ease, stagger } from "../lib/motion";
+import demoPoster from "../assets/maryna.webp";
+
+/** DOCUMENTATION ONLY — mirrors @theme in src/styles/global.css (source of truth). */
+const colorDocs = [
+  { name: "ink", hex: "#0E0F12", swatch: "bg-ink", use: "Page background" },
+  { name: "panel", hex: "#17191E", swatch: "bg-panel", use: "Cards, tracks" },
+  { name: "panel-raised", hex: "#1F2229", swatch: "bg-panel-raised", use: "Hover / raised" },
+  { name: "line", hex: "#2A2D35", swatch: "bg-line", use: "Rules, dividers" },
+  { name: "paper", hex: "#ECEAE4", swatch: "bg-paper", use: "Primary text" },
+  { name: "muted", hex: "#8B8F99", swatch: "bg-muted", use: "Secondary text" },
+  { name: "playhead", hex: "#FF3B30", swatch: "bg-playhead", use: "The one accent" },
+  { name: "playhead-hover", hex: "#FF5A50", swatch: "bg-playhead-hover", use: "Accent hover" },
+  { name: "clip-v", hex: "#5B7CFA", swatch: "bg-clip-v", use: "V1 video track" },
+  { name: "clip-a", hex: "#3DDC97", swatch: "bg-clip-a", use: "A1 audio track" },
+] as const;
+
+const typeScale = [
+  {
+    token: "text-display",
+    cls: "font-display text-display font-extrabold",
+    sample: "Cut on the beat",
+  },
+  { token: "text-h2", cls: "font-display text-h2 font-bold", sample: "Selected work" },
+  {
+    token: "text-h3",
+    cls: "font-display text-h3 font-semibold",
+    sample: "Podcast edit, two cameras",
+  },
+  { token: "text-lead", cls: "text-lead", sample: "Clean audio, tight pacing, on time." },
+  { token: "text-body", cls: "text-body", sample: "Body copy for paragraphs and descriptions." },
+  { token: "text-body-sm", cls: "text-body-sm", sample: "Small print, captions and meta." },
+  {
+    token: "text-label",
+    cls: "font-mono text-label uppercase",
+    sample: "02 — Services · 00:00:12:04",
+  },
+] as const;
+
+const spacingDocs = [
+  { token: "gutter", bar: "w-gutter", note: "clamp(1rem → 2.5rem)" },
+  { token: "ruler", bar: "w-ruler", note: "2.75rem" },
+  { token: "section", bar: "w-section", note: "clamp(5rem → 10rem)" },
+] as const;
+
+const radiusDocs = [
+  "rounded-xs",
+  "rounded-sm",
+  "rounded-md",
+  "rounded-lg",
+  "rounded-pill",
+] as const;
+const shadowDocs = ["shadow-panel", "shadow-playhead"] as const;
+
+const buttonVariants = ["primary", "secondary", "ghost"] as const;
+const buttonSizes = ["sm", "md", "lg"] as const;
+const tagVariants = ["default", "video", "audio", "accent"] as const;
+const ratios = Object.keys(ratioVariants) as MediaRatio[];
+
+const cell = "border-b border-line py-2 pr-4 align-top";
+---
+
+<BaseLayout
+  title="Styleguide"
+  description="Internal styleguide for the Timeline UI components."
+  noindex={true}
+>
+  <header class="mx-auto max-w-content px-gutter pt-section pb-12">
+    <Heading level={1} eyebrow="Timeline UI · internal">
+      Styleguide
+    </Heading>
+    <p class="mt-6 max-w-prose text-lead text-muted">
+      Tokens and base components for the edit-suite look: lots of ink, one playhead red, mono
+      timecode, V1/A1 track accents.
+    </p>
+  </header>
+
+  <Section id="sg-colors" marker="01 — Colors">
+    <Heading level={2} id="sg-colors-title">
+      Color tokens
+    </Heading>
+    <p class="mt-4 max-w-prose text-body-sm text-muted">
+      Documentation mirror of <code class="font-mono">@theme</code> in global.css. Only these colors
+      exist.
+    </p>
+    <ul class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      {colorDocs.map((c) => (
+        <li class="overflow-hidden rounded-sm border border-line bg-panel">
+          <span class={`block h-20 ${c.swatch}`} />
+          <span class="flex flex-col gap-0.5 p-3">
+            <span class="font-mono text-label text-paper">{c.name}</span>
+            <span class="font-mono text-label text-muted">{c.hex}</span>
+            <span class="text-body-sm text-muted">{c.use}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section id="sg-type" marker="02 — Type">
+    <Heading level={2} id="sg-type-title">
+      Type scale
+    </Heading>
+    <dl class="mt-10 flex flex-col">
+      {typeScale.map((t) => (
+        <div class="grid gap-2 border-b border-line py-5 md:grid-cols-[10rem_1fr] md:items-baseline">
+          {/* arbitrary grid template: fixed token column + fluid sample column */}
+          <dt class="font-mono text-label text-muted">{t.token}</dt>
+          <dd class={t.cls}>{t.sample}</dd>
+        </div>
+      ))}
+    </dl>
+  </Section>
+
+  <Section id="sg-space" marker="03 — Space, radii, shadows">
+    <Heading level={2} id="sg-space-title">
+      Spacing, radii, shadows
+    </Heading>
+    <div class="mt-10 grid gap-12 lg:grid-cols-3">
+      <div>
+        <Heading level={3}>Spacing</Heading>
+        <ul class="mt-6 flex flex-col gap-4">
+          {spacingDocs.map((s) => (
+            <li class="flex flex-col gap-1.5">
+              <span class="font-mono text-label text-muted">
+                {s.token} · {s.note}
+              </span>
+              <span class={`block h-3 rounded-xs bg-clip-v ${s.bar}`} />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <Heading level={3}>Radii</Heading>
+        <ul class="mt-6 flex flex-wrap gap-4">
+          {radiusDocs.map((r) => (
+            <li class="flex flex-col items-center gap-2">
+              <span class={`block size-16 border border-line bg-panel-raised ${r}`} />
+              <span class="font-mono text-label text-muted">{r.replace("rounded-", "")}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <Heading level={3}>Shadows</Heading>
+        <ul class="mt-6 flex flex-wrap gap-6">
+          {shadowDocs.map((s) => (
+            <li class="flex flex-col items-center gap-3">
+              <span class={`block size-20 rounded-sm bg-panel ${s}`} />
+              <span class="font-mono text-label text-muted">{s}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="sg-motion" marker="04 — Motion">
+    <Heading level={2} id="sg-motion-title">
+      Motion tokens
+    </Heading>
+    <p class="mt-4 max-w-prose text-body-sm text-muted">
+      Read live from <code class="font-mono">src/lib/motion.ts</code>. Timecode runs at{" "}
+      {TIMECODE_FPS} fps.
+    </p>
+    <div class="mt-10 grid gap-10 lg:grid-cols-3">
+      <table class="w-full text-left text-body-sm">
+        <caption class="mb-3 text-left font-mono text-label text-muted uppercase">Eases</caption>
+        <thead>
+          <tr>
+            <th scope="col" class={cell}>
+              Token
+            </th>
+            <th scope="col" class={cell}>
+              GSAP
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(ease).map(([k, v]) => (
+            <tr>
+              <th scope="row" class={`${cell} font-mono font-normal`}>
+                {k}
+              </th>
+              <td class={`${cell} font-mono text-muted`}>{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <table class="w-full text-left text-body-sm">
+        <caption class="mb-3 text-left font-mono text-label text-muted uppercase">
+          Durations
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" class={cell}>
+              Token
+            </th>
+            <th scope="col" class={cell}>
+              Value
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(duration).map(([k, v]) => (
+            <tr>
+              <th scope="row" class={`${cell} font-mono font-normal`}>
+                {k}
+              </th>
+              <td class={`${cell} font-mono text-muted`}>
+                {v}s · {Math.round(v * 1000)}ms
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <table class="w-full text-left text-body-sm">
+        <caption class="mb-3 text-left font-mono text-label text-muted uppercase">Staggers</caption>
+        <thead>
+          <tr>
+            <th scope="col" class={cell}>
+              Token
+            </th>
+            <th scope="col" class={cell}>
+              Value
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(stagger).map(([k, v]) => (
+            <tr>
+              <th scope="row" class={`${cell} font-mono font-normal`}>
+                {k}
+              </th>
+              <td class={`${cell} font-mono text-muted`}>{v}s</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Section>
+
+  <Section id="sg-type-components" marker="05 — Headings, timecode, tags" tone="panel">
+    <Heading level={2} id="sg-type-components-title">
+      Headings, timecode, tags
+    </Heading>
+    <div class="mt-10 flex flex-col gap-8">
+      <Heading level={3} size="display" eyebrow="Heading · size display, level 3">
+        Hard cuts, no fades
+      </Heading>
+      <Heading level={3} size="h2" eyebrow="Heading · size h2, level 3">
+        Two cameras, one story
+      </Heading>
+      <Heading level={3} eyebrow="Heading · size h3, level 3">
+        Delivered in 48 hours
+      </Heading>
+    </div>
+    <div class="mt-12 flex flex-wrap items-center gap-6">
+      <Timecode seconds={0} />
+      <Timecode seconds={12.16} tone="paper" />
+      <Timecode seconds={1834.5} tone="playhead" label="Runtime 30 minutes 34 seconds" />
+    </div>
+    <div class="mt-10 flex flex-col gap-4">
+      <ul class="flex flex-wrap gap-2" aria-label="Tag variants, mono">
+        {tagVariants.map((v) => (
+          <Tag as="li" variant={v}>
+            {v} tag
+          </Tag>
+        ))}
+      </ul>
+      <ul class="flex flex-wrap gap-2" aria-label="Tag variants, sans">
+        {tagVariants.map((v) => (
+          <Tag as="li" variant={v} font="sans">
+            Adobe Premiere Pro
+          </Tag>
+        ))}
+      </ul>
+    </div>
+  </Section>
+
+  <Section id="sg-buttons" marker="06 — Buttons">
+    <Heading level={2} id="sg-buttons-title">
+      Buttons
+    </Heading>
+    <div class="mt-10 flex flex-col gap-6">
+      {buttonVariants.map((v) => (
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="w-24 font-mono text-label text-muted">{v}</span>
+          {buttonSizes.map((s) => (
+            <Button variant={v} size={s}>
+              Button {s}
+            </Button>
+          ))}
+        </div>
+      ))}
+      <div class="flex flex-wrap items-center gap-4">
+        <span class="w-24 font-mono text-label text-muted">states</span>
+        <Button href="#sg-buttons">
+          Link with icon
+          <Icon slot="icon" name="arrow-right" size="sm" />
+        </Button>
+        <Button href="https://www.upwork.com/" external variant="secondary">
+          External link
+          <Icon slot="icon" name="arrow-up-right" size="sm" />
+        </Button>
+        <Button disabled>Disabled</Button>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="sg-cards" marker="07 — Cards" tone="panel">
+    <Heading level={2} id="sg-cards-title">
+      Cards (clips)
+    </Heading>
+    <ul class="mt-10 grid gap-4 md:grid-cols-3">
+      <Card as="li" track="video">
+        <p class="font-mono text-label text-clip-v">V1 · track="video"</p>
+        <p class="mt-3 text-body-sm text-muted">Video clip card with a clip-v top edge.</p>
+      </Card>
+      <Card as="li" track="audio">
+        <p class="font-mono text-label text-clip-a">A1 · track="audio"</p>
+        <p class="mt-3 text-body-sm text-muted">Audio clip card with a clip-a top edge.</p>
+      </Card>
+      <Card as="li" track="none" interactive>
+        <p class="font-mono text-label text-muted">track="none" · interactive</p>
+        <p class="mt-3 text-body-sm text-muted">
+          Hover lift (motion-safe).{" "}
+          <a href="#sg-cards" class="text-paper underline">
+            Has a link
+          </a>
+          .
+        </p>
+      </Card>
+    </ul>
+  </Section>
+
+  <Section id="sg-icons" marker="08 — Icons, social, rating">
+    <Heading level={2} id="sg-icons-title">
+      Icons, social links, rating
+    </Heading>
+    <ul class="mt-10 grid grid-cols-3 gap-3 sm:grid-cols-5 lg:grid-cols-7">
+      {iconNames.map((name) => (
+        <li class="flex flex-col items-center gap-3 rounded-sm border border-line bg-panel p-4">
+          <Icon name={name} size="lg" />
+          <span class="font-mono text-label text-muted">{name}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-12 grid gap-8 md:grid-cols-3">
+      <div class="flex flex-col gap-3">
+        <p class="font-mono text-label text-muted uppercase">Row · icons</p>
+        <SocialLinks />
+      </div>
+      <div class="flex flex-col gap-3">
+        <p class="font-mono text-label text-muted uppercase">Column · labels · sm</p>
+        <SocialLinks layout="column" withLabels size="sm" />
+      </div>
+      <div class="flex flex-col gap-3">
+        <p class="font-mono text-label text-muted uppercase">Star rating</p>
+        <StarRating />
+        <StarRating tone="paper" size="md" />
+      </div>
+    </div>
+  </Section>
+
+  <Section id="sg-media" marker="09 — Media placeholder" tone="panel">
+    <Heading level={2} id="sg-media-title">
+      Media placeholder
+    </Heading>
+    <p class="mt-4 max-w-prose text-body-sm text-muted">
+      Same footprint as real media, so swapping in footage is zero-CLS.
+    </p>
+    <div class="mt-10 grid items-start gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {ratios.map((r, i) => (
+        <figure class="flex flex-col gap-2">
+          <MediaPlaceholder
+            ratio={r}
+            timecode={i * 7.4}
+            track={i === 3 ? "audio" : "video"}
+            label={i === 0 ? undefined : `Ratio ${r}`}
+          />
+          <figcaption class="font-mono text-label text-muted">ratio="{r}"</figcaption>
+        </figure>
+      ))}
+    </div>
+  </Section>
+
+  <Section id="sg-video" marker="10 — Video player">
+    <Heading level={2} id="sg-video-title">
+      Video player
+    </Heading>
+    <div class="mt-10 grid gap-10 lg:grid-cols-2">
+      <figure class="flex flex-col gap-3">
+        <VideoPlayer source={null} placeholderLabel="Hero loop coming soon" />
+        <figcaption class="text-body-sm text-muted">
+          kind="loop" slot with no footage yet → placeholder. With a source it autoplays muted in
+          view only, poster-only under reduced motion / Save-Data, with a play/pause toggle.
+        </figcaption>
+      </figure>
+      <figure class="flex flex-col gap-3">
+        <VideoPlayer
+          source={{
+            kind: "embed",
+            provider: "youtube",
+            id: "DEMO-not-a-real-id",
+            title: "Demo embed (fake id)",
+            poster: demoPoster,
+          }}
+        />
+        <figcaption class="text-body-sm text-muted">
+          kind="embed" facade — DEMO with a fake id. Nothing loads from YouTube until you press
+          play.
+        </figcaption>
+      </figure>
+      <figure class="flex flex-col gap-3">
+        <VideoPlayer ratio="9/16" class="max-w-xs" />
+        <figcaption class="text-body-sm text-muted">Missing source, 9/16 → placeholder.</figcaption>
+      </figure>
+    </div>
+  </Section>
+
+  <Section id="sg-before-after" marker="11 — Before / after" tone="panel">
+    <Heading level={2} id="sg-before-after-title">
+      Before / after
+    </Heading>
+    <div class="mt-10 grid gap-10 lg:grid-cols-2">
+      <div class="flex flex-col gap-3">
+        <Heading level={3}>Color grade (image)</Heading>
+        <BeforeAfter client:visible mode="image" />
+      </div>
+      <div class="flex flex-col gap-3">
+        <Heading level={3}>Audio A/B</Heading>
+        <BeforeAfter client:visible mode="audio" />
+        <p class="text-body-sm text-muted">
+          No audio yet: disabled play state with a deterministic placeholder waveform (noisy vs
+          clean). The A/B switch still previews both waveforms.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

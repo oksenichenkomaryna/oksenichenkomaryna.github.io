@@ -1,0 +1,42 @@
+---
+/**
+ * Heading with semantic `level` decoupled from visual `size`.
+ * An `eyebrow` renders as a mono label inside an <hgroup>.
+ */
+import clsx from "clsx";
+
+const sizeVariants = {
+  display: "text-display font-extrabold",
+  h2: "text-h2 font-bold",
+  h3: "text-h3 font-semibold",
+} as const;
+
+const tags = { 1: "h1", 2: "h2", 3: "h3" } as const;
+const defaultSize = { 1: "display", 2: "h2", 3: "h3" } as const;
+
+interface Props {
+  level: keyof typeof tags;
+  size?: keyof typeof sizeVariants;
+  eyebrow?: string;
+  /** Needed when a Section points aria-labelledby at this heading. */
+  id?: string;
+  class?: string;
+}
+
+const { level, size = defaultSize[level], eyebrow, id, class: className } = Astro.props;
+const Tag = tags[level];
+const headingClass = clsx("font-display text-paper", sizeVariants[size], className);
+---
+
+{eyebrow ? (
+  <hgroup class="flex flex-col gap-3">
+    <p class="font-mono text-label text-muted uppercase">{eyebrow}</p>
+    <Tag id={id} class={headingClass}>
+      <slot />
+    </Tag>
+  </hgroup>
+) : (
+  <Tag id={id} class={headingClass}>
+    <slot />
+  </Tag>
+)}

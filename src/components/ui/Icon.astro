@@ -1,0 +1,45 @@
+---
+/**
+ * Inline SVG icon. Decorative (aria-hidden) unless a `title` is given,
+ * in which case it becomes role="img" with that accessible name.
+ */
+import clsx from "clsx";
+import { icons, type IconName } from "./icons";
+
+const sizeVariants = {
+  sm: "size-4",
+  md: "size-5",
+  lg: "size-6",
+  xl: "size-8",
+} as const;
+
+interface Props {
+  name: IconName;
+  size?: keyof typeof sizeVariants;
+  title?: string;
+  class?: string;
+}
+
+const { name, size = "md", title, class: className } = Astro.props;
+const icon = icons[name];
+const isStroke = icon.style === "stroke";
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill={isStroke ? "none" : "currentColor"}
+  stroke={isStroke ? "currentColor" : undefined}
+  stroke-width={isStroke ? 2 : undefined}
+  stroke-linecap={isStroke ? "round" : undefined}
+  stroke-linejoin={isStroke ? "round" : undefined}
+  class={clsx("shrink-0", sizeVariants[size], className)}
+  aria-hidden={title ? undefined : "true"}
+  role={title ? "img" : undefined}
+  focusable="false"
+>
+  {title && <title>{title}</title>}
+  {icon.paths.map((d) => (
+    <path d={d} />
+  ))}
+</svg>
