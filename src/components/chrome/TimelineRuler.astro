@@ -145,15 +145,12 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
     if (!ruler) return;
     const timecode = ruler.querySelector<HTMLElement>("[data-timecode]");
 
-    // Mobile chapter menu: closes on link click, Escape and outside click.
+    // Mobile chapter menu: closes on Escape and outside click (link clicks: lib/smooth-scroll.ts).
     // All listeners share one AbortController, aborted on the next page swap.
     const menu = ruler.querySelector<HTMLDetailsElement>("[data-chapter-menu]");
     if (menu) {
       menuAbort = new AbortController();
       const { signal } = menuAbort;
-      menu
-        .querySelectorAll("a")
-        .forEach((a) => a.addEventListener("click", () => (menu.open = false), { signal }));
       document.addEventListener(
         "keydown",
         (e) => {
