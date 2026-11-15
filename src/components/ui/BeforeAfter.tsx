@@ -165,9 +165,10 @@ function ImageCompare(props: ImageModeProps) {
         {/* Handle: full-width layer translated by --pos so the line sits at the split */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 translate-x-(--pos) peer-focus-visible:[&>span]:shadow-playhead"
+          className="pointer-events-none absolute inset-0 translate-x-(--pos) peer-focus-visible:[&>span:last-child]:outline-2 peer-focus-visible:[&>span:last-child]:outline-offset-2 peer-focus-visible:[&>span:last-child]:outline-paper"
         >
-          {/* arbitrary child variant: focus ring is drawn on the line, the input itself is invisible */}
+          {/* arbitrary child variant (peer-* needs a sibling): the input is invisible, so its focus
+              ring is drawn as a paper outline (15.9:1) on the handle circle, this div's last child. */}
           <span className="absolute inset-y-0 left-0 w-0.5 -translate-x-1/2 bg-playhead" />
           <span className="absolute top-3 left-0 -translate-x-1/2 rounded-xs bg-playhead px-1.5 py-0.5 font-mono text-label text-ink tabular-nums">
             {formatTimecode((pos / 100) * SCRUB_SECONDS)}
@@ -188,7 +189,7 @@ function ImageCompare(props: ImageModeProps) {
         </span>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute right-3 bottom-3 rounded-xs bg-ink/70 px-2 py-1 font-mono text-label text-muted"
+          className="pointer-events-none absolute right-3 bottom-3 rounded-xs bg-ink/90 px-2 py-1 font-mono text-label text-paper"
         >
           {beforeLabel}
         </span>
@@ -263,7 +264,7 @@ function AudioCompare(props: AudioModeProps) {
               onClick={() => select(side)}
               className={clsx(
                 "rounded-xs px-3 py-1.5 font-mono text-label uppercase motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut",
-                active === side ? "bg-panel-raised text-paper" : "text-muted hover:text-paper",
+                active === side ? "bg-clip-a text-ink" : "text-muted hover:text-paper",
               )}
             >
               {labelFor(side)}

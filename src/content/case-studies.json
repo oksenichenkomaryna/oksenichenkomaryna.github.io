@@ -5,17 +5,22 @@
     "featured": true,
     "category": "interviews",
     "categoryBasis": "stated",
-    "title": "30-minute multi-camera interview",
+    "title": "30-minute multi-camera interviews",
     "brief": "Edit together a 30-minute interview filmed on 2–3 cameras into one finished video.",
     "whatSheDid": [
-      "Synced all camera angles to the main audio track",
-      "Cut between angles to follow the conversation",
-      "Matched color across cameras",
-      "Made every change the client asked for in revisions"
+      "Synced the 2–3 camera angles",
+      "Cut the angles into one continuous ~30-minute interview",
+      "Made the changes the client asked for"
     ],
-    "output": "One ~30-minute multi-angle interview edit",
-    "cameraAngles": { "min": 2, "max": 3 },
-    "runtimeMinutes": { "min": 30, "max": 30 },
+    "output": "~30-minute multi-angle interview edits",
+    "cameraAngles": {
+      "min": 2,
+      "max": 3
+    },
+    "runtimeMinutes": {
+      "min": 30,
+      "max": 30
+    },
     "relatedReview": "miles-b-interview",
     "relatedServices": ["multicamera-editing"],
     "media": {
@@ -33,17 +38,19 @@
     "featured": false,
     "category": "interviews",
     "categoryBasis": "stated",
-    "title": "Expert interviews, delivered next day",
+    "title": "Expert interviews, incl. a next-day rush",
     "brief": "Edit expert interviews of 16–19 minutes each, including an urgent job needed by the next day.",
     "whatSheDid": [
-      "Cut each interview down to a tight, watchable runtime",
-      "Cleaned up the audio",
-      "Prioritised the urgent edit and delivered it the next day"
+      "Edited each interview to a finished 16–19-minute cut",
+      "Delivered an urgent edit the next day"
     ],
     "output": "Expert interview edits of 16–19 minutes, incl. next-day delivery",
-    "runtimeMinutes": { "min": 16, "max": 19 },
+    "runtimeMinutes": {
+      "min": 16,
+      "max": 19
+    },
     "turnaround": "Next day (urgent)",
-    "relatedServices": ["multicamera-editing", "podcast-editing"],
+    "relatedServices": [],
     "media": {
       "status": "needs-asset",
       "request": "Poster frame + short excerpt from one expert interview."
@@ -61,10 +68,8 @@
     "title": "Podcast audio + video edit from Zencastr",
     "brief": "Edit both the audio and the video of a podcast recorded on Zencastr.",
     "whatSheDid": [
-      "Lined up the separate Zencastr audio and video tracks",
-      "Edited the conversation for pace",
-      "Cleaned and balanced the audio",
-      "Exported a finished video episode"
+      "Edited the audio of the Zencastr recording",
+      "Edited the video of the same recording"
     ],
     "output": "Edited podcast episode (audio + video)",
     "recordingPlatform": "Zencastr",
@@ -85,9 +90,8 @@
     "title": "Background static removed from a video podcast",
     "brief": "Clean up background audio static from a video podcast.",
     "whatSheDid": [
-      "Isolated the static in the background of the recording",
-      "Reduced it while keeping the voices natural",
-      "Delivered the cleaned podcast on time"
+      "Removed the background static from the podcast audio",
+      "Delivered the cleaned video podcast on time"
     ],
     "output": "Video podcast with cleaned-up audio",
     "scope": ["audio"],
@@ -106,19 +110,17 @@
     "id": "zoom-interview-short-clips",
     "order": 5,
     "featured": false,
-    "category": "ads-social",
-    "categoryBasis": "assumed",
+    "category": "short-form",
     "title": "Zoom interview cut into short clips",
     "brief": "Turn a recorded Zoom interview into short clips.",
     "whatSheDid": [
-      "Found the strongest self-contained moments in the interview",
-      "Cut each into a short standalone clip",
-      "Cleaned up the call audio"
+      "Cut the recorded Zoom interview into short clips",
+      "Delivered each clip as a standalone video"
     ],
     "output": "Short clips from one Zoom interview",
     "format": "short-clips",
     "source": "Zoom recording",
-    "relatedServices": ["podcast-editing", "social-video-ads"],
+    "relatedServices": [],
     "media": {
       "status": "needs-asset",
       "request": "1–2 of the short clips (vertical if that was the format) + poster frame."
@@ -126,25 +128,29 @@
     "factBasis": [
       "FACTS.md › Work history: Zoom interview → short clips",
       "FACTS.md › Services 1: short-form clips from long podcasts"
-    ]
+    ],
+    "categoryBasis": "stated"
   },
   {
     "id": "eight-videos-three-days",
     "order": 6,
     "featured": true,
-    "category": "courses-tutorials",
-    "categoryBasis": "assumed",
+    "category": "batch",
+    "categoryBasis": "stated",
     "title": "8 videos in 3 days",
     "brief": "Edit a batch of eight 3-minute videos with lower thirds and subtitles on a 3-day deadline.",
     "whatSheDid": [
-      "Set up one consistent look for lower thirds and subtitles across the batch",
-      "Edited all eight videos to about 3 minutes each",
+      "Edited eight videos of about 3 minutes each",
       "Added lower thirds and subtitles to every video",
       "Delivered the full batch within 3 days"
     ],
     "output": "8 × 3-min videos in 3 days with lower thirds and subtitles",
-    "batch": { "count": 8, "minutesEach": 3, "turnaroundDays": 3 },
-    "relatedServices": ["online-course-editing", "software-tutorials"],
+    "batch": {
+      "count": 8,
+      "minutesEach": 3,
+      "turnaroundDays": 3
+    },
+    "relatedServices": [],
     "media": {
       "status": "needs-asset",
       "request": "Poster frame from 1–2 videos of the batch showing lower thirds + subtitles. Confirm topic/category."
@@ -157,18 +163,17 @@
     "id": "faceless-video",
     "order": 7,
     "featured": false,
-    "category": "ads-social",
-    "categoryBasis": "assumed",
+    "category": "short-form",
+    "categoryBasis": "stated",
     "title": "Faceless video editing",
     "brief": "Edit faceless videos, where no presenter appears on camera.",
     "whatSheDid": [
-      "Built the visuals to carry the story without a presenter",
-      "Cut to keep pace without an on-camera host",
-      "Edited and balanced the audio"
+      "Edited the footage into finished videos",
+      "Worked without an on-camera presenter"
     ],
     "output": "Faceless video edits",
     "format": "faceless",
-    "relatedServices": ["social-video-ads"],
+    "relatedServices": [],
     "media": {
       "status": "needs-asset",
       "request": "One faceless video excerpt + poster frame. Confirm platform (YouTube / social)."

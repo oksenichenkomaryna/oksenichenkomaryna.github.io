@@ -3,14 +3,14 @@
     "id": "brief",
     "order": 1,
     "title": "Brief",
-    "body": "Send your footage, audio and notes. I confirm length, format, captions and deadline before I cut, so we agree on the result upfront.",
+    "body": "Send your footage, audio and notes, and we agree on what you need before I start.",
     "factBasis": ["FACTS.md › Positioning: communication is a cornerstone of her workflow"]
   },
   {
     "id": "first-cut",
     "order": 2,
     "title": "First cut",
-    "body": "I sync cameras, clean the audio, cut for pace and add titles, lower thirds or subtitles. You get a first version to review, on the date we set.",
+    "body": "I sync cameras, clean the audio, cut for pace and add titles, lower thirds or subtitles, then send you the first version to review.",
     "factBasis": [
       "FACTS.md › Services 4: multicamera sync",
       "FACTS.md › Work history: background static removal; lower thirds + subtitles"
@@ -20,7 +20,7 @@
     "id": "revisions",
     "order": 3,
     "title": "Revisions",
-    "body": "Tell me what to change. I make the edits and keep you updated — no chasing, no guessing.",
+    "body": "Tell me what to change and I'll make the edits. Communication is at the core of how I work.",
     "proof": "miles-b-interview",
     "factBasis": [
       "FACTS.md › Review, Miles B.: \"made all the changes we needed\"",
@@ -31,7 +31,7 @@
     "id": "delivery",
     "order": 4,
     "title": "Delivery",
-    "body": "Final files, ready to publish, on time. Urgent? I have delivered next-day.",
+    "body": "Final files, ready to publish. Urgent? I have delivered next-day.",
     "proof": "dan-r-podcast-audio",
     "factBasis": [
       "FACTS.md › Review, Dan R.: \"delivers on time\"",

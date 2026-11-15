@@ -6,13 +6,12 @@
  * Pass `reel` once a showreel loop exists; the monitor then plays it (poster = LCP).
  */
 import { getCollection, getEntry } from "astro:content";
-import clsx from "clsx";
 import Button from "../../ui/Button.astro";
 import Icon from "../../ui/Icon.astro";
 import StarRating from "../../ui/StarRating.astro";
 import HeroMonitor, { type HeroReel } from "./HeroMonitor.astro";
 import HeroTimeline from "./HeroTimeline.astro";
-import { heroGate, titleCards } from "./hero-data";
+import { titleCards } from "./hero-data";
 
 interface Props {
   reel?: HeroReel;
@@ -61,22 +60,16 @@ const rateLabel = rate.show
       {eyebrow}
     </p>
 
-    <h1
-      id="top-title"
-      class="mt-5 font-display text-display font-extrabold text-paper"
-      data-reveal="beat"
-      data-reveal-now
-    >
+    <h1 id="top-title" class="mt-5 font-display text-display font-extrabold text-paper">
       {headline}
     </h1>
 
     <div class="mt-8 grid gap-10 md:mt-10 lg:grid-cols-12 lg:items-end lg:gap-12">
       <div class="flex flex-col gap-7 lg:col-span-6">
-        <p class={clsx("max-w-prose text-lead text-muted", heroGate)} data-hero-in="rise">
-          {subline}
-        </p>
+        <!-- LCP-sized copy is never hidden (perf audit): visible at first paint, no entrance motion. -->
+        <p class="max-w-prose text-lead text-muted">{subline}</p>
 
-        <div class={clsx("flex flex-col gap-3 sm:flex-row", heroGate)} data-hero-in="rise">
+        <div class="flex flex-col gap-3 sm:flex-row">
           <Button href={upwork.data.url} external size="lg" class="w-full sm:w-auto">
             {cta.primary.label}
             <Icon slot="icon" name="arrow-up-right" size="sm" />
@@ -87,13 +80,7 @@ const rateLabel = rate.show
           </Button>
         </div>
 
-        <div
-          class={clsx(
-            "flex flex-wrap items-center gap-x-5 gap-y-2 text-body-sm text-muted",
-            heroGate,
-          )}
-          data-hero-in="rise"
-        >
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-body-sm text-muted">
           <span class="flex items-center gap-2">
             <StarRating rating={rating.value} />
             <span>

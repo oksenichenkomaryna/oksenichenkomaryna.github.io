@@ -60,9 +60,16 @@ const videoJsonLd =
         creator: { "@type": "Person", name: site.data.name.full },
       }
     : null;
+
+// Portfolio-voiced meta description (the `brief` reads like a job post). Facts only.
+const metaDescription = `${title}: ${output.replace(/\.$/, "")}. Edited by ${site.data.name.full}, freelance ${site.data.jobTitle.toLowerCase()} working in Adobe Premiere Pro.`;
 ---
 
-<PageLayout title={`${title} · ${site.data.name.full}`} description={brief} ogType="article">
+<PageLayout
+  title={`${title} · ${site.data.name.full}`}
+  description={metaDescription}
+  ogType="article"
+>
   {videoJsonLd && (
     <script slot="head" type="application/ld+json" set:html={JSON.stringify(videoJsonLd)} />
   )}
@@ -116,9 +123,11 @@ const videoJsonLd =
 
     <CaseMedia
       media={media}
+      title={title}
+      mode="player"
       fallback="placeholder"
-      placeholderLabel="Sample on request"
-      placeholderDescription={`Video sample for "${title}" is available on request`}
+      placeholderLabel="Sample coming soon"
+      placeholderDescription={`Video sample for "${title}" coming soon`}
       class="mt-12 md:mt-16"
     />
 
@@ -150,7 +159,7 @@ const videoJsonLd =
         </Heading>
         <figure class="flex flex-col gap-6 lg:w-3/4">
           <div class="flex flex-wrap items-center gap-3">
-            <StarRating rating={review.data.rating} size="md" />
+            {review.data.rating && <StarRating rating={review.data.rating} size="md" />}
             <span class="font-mono text-label text-muted uppercase">
               Verbatim from {review.data.source}
             </span>

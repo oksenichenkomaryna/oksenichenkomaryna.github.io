@@ -89,7 +89,6 @@ const site = defineCollection({
       /** "from" renders as a starting price, e.g. "from $20/hr". */
       display: z.enum(["exact", "from"]),
     }),
-    upworkUrl: z.url(),
     verified: z.boolean(),
     photo: z.object({ src: z.string().min(1), alt: z.string().min(1) }),
   }),
@@ -169,7 +168,8 @@ const caseStudyBase = {
   whatSheDid: z.array(z.string().min(1)).min(2).max(5),
   output: z.string().min(1),
   relatedReview: reference("reviews").optional(),
-  relatedServices: z.array(reference("services")).min(1),
+  /** Empty when the service mapping is not confirmed by the client. */
+  relatedServices: z.array(reference("services")),
   media,
   factBasis,
 };
@@ -190,13 +190,13 @@ const caseStudy = z.discriminatedUnion("category", [
   }),
   z.object({
     ...caseStudyBase,
-    category: z.literal("ads-social"),
+    category: z.literal("short-form"),
     format: z.enum(["short-clips", "faceless"]),
     source: z.string().optional(),
   }),
   z.object({
     ...caseStudyBase,
-    category: z.literal("courses-tutorials"),
+    category: z.literal("batch"),
     batch: z
       .object({
         count: z.number().int().positive(),
@@ -224,7 +224,8 @@ const reviews = defineCollection({
     author: z.string().min(1),
     projectTitle: z.string().min(1),
     date: isoMonth,
-    rating: z.number().int().min(1).max(5),
+    /** Per-review rating — only set when confirmed (FACTS.md gives the 5.0 aggregate only). */
+    rating: z.number().int().min(1).max(5).optional(),
     source: z.literal("Upwork"),
     verbatimNote: z.string().optional(),
   }),

@@ -31,10 +31,12 @@ const size = sizeVariants[featured ? "featured" : "regular"];
 
 <li class={clsx("flex", size.li)} data-reveal="cut" data-category={category}>
   <Card as="article" track={meta.track} padding="none" interactive class="flex w-full flex-col">
+    <!-- media sits above the stretched title link (z-raised) so its play/pause stays clickable -->
     <CaseMedia
       media={media}
+      title={title}
       sizes="(min-width: 64rem) 30rem, 100vw"
-      class="rounded-none border-0"
+      class="relative z-(--z-overlay) rounded-none border-0"
     />
 
     <div class="flex grow flex-col gap-5 p-5 md:p-6">
@@ -77,7 +79,7 @@ const size = sizeVariants[featured ? "featured" : "regular"];
         {review ? (
           <span class="inline-flex items-center gap-1.5 font-mono text-label whitespace-nowrap text-paper uppercase">
             <Icon name="star" size="sm" class="text-playhead" />
-            {review.data.rating.toFixed(1)} client review
+            Client review
           </span>
         ) : (
           <span />

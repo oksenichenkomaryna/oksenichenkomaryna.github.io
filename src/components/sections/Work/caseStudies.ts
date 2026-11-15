@@ -14,8 +14,8 @@ export type Category = CaseData["category"];
 export const categories = [
   { id: "podcasts", label: "Podcasts", track: "audio" },
   { id: "interviews", label: "Interviews", track: "video" },
-  { id: "ads-social", label: "Ads & Social", track: "video" },
-  { id: "courses-tutorials", label: "Courses & Tutorials", track: "video" },
+  { id: "short-form", label: "Clips & faceless", track: "video" },
+  { id: "batch", label: "Batch delivery", track: "video" },
 ] as const satisfies readonly { id: Category; label: string; track: "video" | "audio" }[];
 
 type CategoryMeta = (typeof categories)[number];
@@ -63,12 +63,12 @@ export function creditsFor(data: CaseData): Credit[] {
         data.recordingPlatform && { label: "Recorded on", value: data.recordingPlatform },
         { label: "Scope", value: data.scope.map((s) => scopeLabels[s]).join(" + ") },
       ].filter((c): c is Credit => Boolean(c));
-    case "ads-social":
+    case "short-form":
       return [
         { label: "Format", value: formatLabels[data.format] },
         data.source && { label: "Source", value: data.source },
       ].filter((c): c is Credit => Boolean(c));
-    case "courses-tutorials":
+    case "batch":
       return data.batch
         ? [
             { label: "Batch", value: `${data.batch.count} × ${data.batch.minutesEach} min` },
@@ -81,10 +81,26 @@ export function creditsFor(data: CaseData): Credit[] {
   }
 }
 
-/** Ready media → VideoSource (loop when a clip exists, poster-only otherwise → null). */
-export function videoSourceFor(media: CaseData["media"]): VideoSource | null {
+/** Where the media plays: a silent preview loop (grid cards) or a full player (case page). */
+export type MediaMode = "preview" | "player";
+
+/** Ready media → VideoSource; poster-only media → null. The player keeps sound + captions. */
+export function videoSourceFor(
+  media: CaseData["media"],
+  mode: MediaMode,
+  title: string,
+): VideoSource | null {
   if (media.status !== "ready" || !media.clip) return null;
-  return { kind: "loop", mp4: media.clip, poster: media.poster, alt: media.alt };
+  if (mode === "preview") {
+    return { kind: "loop", mp4: media.clip, poster: media.poster, alt: media.alt };
+  }
+  return {
+    kind: "file",
+    mp4: media.clip,
+    poster: media.poster,
+    title,
+    captions: media.captions ? [{ src: media.captions, srclang: "en", label: "English" }] : [],
+  };
 }
 
 const monthFormat = new Intl.DateTimeFormat("en-US", {

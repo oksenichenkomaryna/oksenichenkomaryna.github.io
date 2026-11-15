@@ -7,9 +7,10 @@
  */
 import { getEntry } from "astro:content";
 import Icon from "../ui/Icon.astro";
+import { chapterNumber, type ChapterId } from "../../lib/chapters";
 
 export interface Chapter {
-  id: string;
+  id: ChapterId;
   label: string;
 }
 
@@ -35,10 +36,10 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   <div class="mx-auto flex h-full max-w-content items-center gap-4 px-gutter">
     <a
       href="/"
-      class="flex shrink-0 items-center gap-2 font-display text-body-sm font-semibold tracking-tight"
+      class="flex min-w-0 items-center gap-2 font-display text-body-sm font-semibold tracking-tight"
     >
       <span class="inline-block size-2 rounded-pill bg-playhead" aria-hidden="true"></span>
-      {site.data.name.full}
+      <span class="truncate">{site.data.name.full}</span>
     </a>
 
     <nav aria-label="Sections" class="@container relative hidden h-full flex-1 lg:block">
@@ -52,15 +53,15 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
         ))}
       </div>
       <ol class="relative flex h-full items-center justify-between">
-        {chapters.map((c, i) => (
+        {chapters.map((c) => (
           <li>
             <a
               href={chapterHref(c.id)}
-              class="group flex items-center gap-1.5 rounded-xs px-1 font-mono text-label text-muted uppercase transition-colors duration-(--duration-fast) ease-trim hover:text-paper aria-[current=location]:text-paper"
+              class="group flex items-center gap-1.5 rounded-xs px-1 font-mono text-label text-muted uppercase hover:text-paper motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-trim aria-[current=location]:text-paper"
               data-chapter={c.id}
             >
-              <span class="tabular-nums opacity-60" aria-hidden="true">
-                {String(i + 1).padStart(2, "0")}
+              <span class="tabular-nums" aria-hidden="true">
+                {chapterNumber(c.id)}
               </span>
               {c.label}
             </a>
@@ -75,7 +76,35 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
       ></div>
     </nav>
 
-    <div class="ml-auto flex shrink-0 items-center gap-3">
+    <!-- below lg: compact chapter menu (the ruler nav needs the width) -->
+    <details class="group/menu relative ml-auto lg:hidden" data-chapter-menu>
+      <summary class="flex min-h-6 cursor-pointer list-none items-center gap-1.5 rounded-xs px-1 font-mono text-label text-muted uppercase hover:text-paper [&::-webkit-details-marker]:hidden">
+        Sections
+        <Icon name="arrow-right" size="sm" class="rotate-90 group-open/menu:-rotate-90" />
+      </summary>
+      <nav
+        aria-label="Sections"
+        class="absolute top-full right-0 mt-3 w-56 rounded-sm border border-line bg-panel p-2 shadow-panel"
+      >
+        <ol class="flex flex-col">
+          {chapters.map((c) => (
+            <li>
+              <a
+                href={chapterHref(c.id)}
+                class="flex items-center gap-2 rounded-xs px-2 py-2 font-mono text-label text-paper uppercase hover:bg-panel-raised"
+              >
+                <span class="text-muted tabular-nums" aria-hidden="true">
+                  {chapterNumber(c.id)}
+                </span>
+                {c.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+
+    <div class="flex shrink-0 items-center gap-3 lg:ml-auto">
       <span
         class="hidden font-mono text-label text-muted tabular-nums sm:inline"
         aria-hidden="true"
@@ -87,9 +116,9 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
         href={upwork.data.url}
         target="_blank"
         rel="noopener"
-        class="inline-flex items-center gap-1.5 rounded-sm bg-playhead px-3 py-1.5 text-body-sm font-semibold text-ink transition-colors duration-(--duration-fast) ease-trim hover:bg-playhead-hover"
+        class="inline-flex items-center gap-1.5 rounded-sm bg-playhead px-3 py-1.5 text-body-sm font-semibold text-ink hover:bg-playhead-hover motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-trim"
       >
-        Hire on Upwork
+        Hire<span class="sr-only sm:not-sr-only">&nbsp;on Upwork</span>
         <Icon name="arrow-up-right" class="size-3.5" />
         <span class="sr-only">(opens in new tab)</span>
       </a>
@@ -105,14 +134,8 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 <script>
   import { ScrollTrigger } from "../../lib/gsap";
-  import { SEQUENCE_RUNTIME_S, TIMECODE_FPS } from "../../lib/motion";
-
-  function format(totalFrames: number): string {
-    const ff = totalFrames % TIMECODE_FPS;
-    const s = Math.floor(totalFrames / TIMECODE_FPS);
-    const pad = (n: number) => String(n).padStart(2, "0");
-    return `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}:${pad(ff)}`;
-  }
+  import { SEQUENCE_RUNTIME_S } from "../../lib/motion";
+  import { formatTimecode } from "../ui/timecode";
 
   let triggers: ScrollTrigger[] = [];
 
@@ -121,16 +144,19 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
     if (!ruler) return;
     const timecode = ruler.querySelector<HTMLElement>("[data-timecode]");
 
+    // Mobile chapter menu: close after choosing a section.
+    const menu = ruler.querySelector<HTMLDetailsElement>("[data-chapter-menu]");
+    menu
+      ?.querySelectorAll("a")
+      .forEach((a) => a.addEventListener("click", () => (menu.open = false)));
+
     triggers.push(
       ScrollTrigger.create({
         start: 0,
         end: "max",
         onUpdate: (self) => {
           ruler.style.setProperty("--progress", self.progress.toFixed(4));
-          if (timecode)
-            timecode.textContent = format(
-              Math.round(self.progress * SEQUENCE_RUNTIME_S * TIMECODE_FPS),
-            );
+          if (timecode) timecode.textContent = formatTimecode(self.progress * SEQUENCE_RUNTIME_S);
         },
       }),
     );

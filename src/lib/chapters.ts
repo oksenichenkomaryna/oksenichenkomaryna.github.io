@@ -31,8 +31,12 @@ const enabled: Record<ChapterId, boolean> = {
 
 export const chapters = allChapters.filter((c) => enabled[c.id]);
 
-/** "02 — Work" style marker for a chapter, numbered by page order. */
+/** "02" — a chapter's number by page order (shared by section markers and the ruler nav). */
+export function chapterNumber(id: ChapterId): string {
+  return String(chapters.findIndex((c) => c.id === id) + 1).padStart(2, "0");
+}
+
+/** "02 — Work" style marker for a chapter. */
 export function markerFor(id: ChapterId): string {
-  const i = chapters.findIndex((c) => c.id === id);
-  return `${String(i + 1).padStart(2, "0")} — ${chapters[i]?.label ?? id}`;
+  return `${chapterNumber(id)} — ${chapters.find((c) => c.id === id)?.label ?? id}`;
 }

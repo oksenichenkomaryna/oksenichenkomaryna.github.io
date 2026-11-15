@@ -60,7 +60,8 @@ const filterButton = clsx(
           data-label={f.label}
         >
           {f.label}
-          <span class="opacity-70 tabular-nums">{f.count}</span>
+          <span class="sr-only">, </span>
+          <span class="tabular-nums">{f.count}</span>
         </button>
       ))}
     </div>

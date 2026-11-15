@@ -65,7 +65,7 @@ const dot = "text-line";
     class="flex flex-wrap items-center gap-x-3 gap-y-2 text-body-sm text-muted md:col-span-9 md:col-start-4"
     data-reveal="rise"
   >
-    <StarRating rating={review.rating} />
+    {review.rating && <StarRating rating={review.rating} />}
     <span class="font-medium text-paper">{review.author}</span>
     <span aria-hidden="true" class={dot}>
       ·

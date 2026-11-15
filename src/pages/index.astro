@@ -22,7 +22,8 @@ const site = await getEntry("site", "main");
 const positioning = await getEntry("positioning", "main");
 if (!site || !positioning) throw new Error("site/positioning entries missing");
 
-const title = `${site.data.name.full} · ${site.data.jobTitle} for Podcasts, Interviews & Courses`;
+// ≤ 60 chars, buyer keywords first.
+const title = `Video & Podcast Editor (Premiere Pro) · ${site.data.name.full}`;
 const description = positioning.data.fiveSecond.line;
 ---
 

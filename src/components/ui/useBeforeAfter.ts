@@ -105,7 +105,9 @@ export function useAudioAB(enabled: boolean) {
           setPlaying(true);
           setStatus(`Playing ${statusNoun[side]}`);
         })
-        .catch(() => {
+        .catch((error: unknown) => {
+          // A quick pause() rejects the pending play() with AbortError — not a failure.
+          if (error instanceof DOMException && error.name === "AbortError") return;
           setPlaying(false);
           setStatus("Playback failed");
         });

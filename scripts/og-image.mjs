@@ -1,4 +1,4 @@
-// Generates public/og.png (1200×630) — run: node scripts/og-image.mjs
+// Generates public/og.jpg (1200×630) — run: node scripts/og-image.mjs
 // Colors mirror @theme tokens in src/styles/global.css.
 import sharp from "sharp";
 import { readFile } from "node:fs/promises";
@@ -45,6 +45,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
 
 await sharp(Buffer.from(svg))
   .composite([{ input: photo, left: 820, top: 100 }])
-  .png({ compressionLevel: 9 })
-  .toFile("public/og.png");
-console.log("public/og.png written");
+  .jpeg({ quality: 82, mozjpeg: true })
+  .toFile("public/og.jpg");
+console.log("public/og.jpg written");

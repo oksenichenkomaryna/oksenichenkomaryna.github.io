@@ -4,9 +4,8 @@
  *   0.0 s  black; eyebrow + ruler timecode already painted
  *   0.3 s  monitor frame hard-cuts in, mini-ruler draws, playhead appears
  *   0.42 s timeline lanes wipe in, staggered
- *   (H1 words cut in on the beat — handled by reveal.ts, data-reveal="beat")
- *   1.5 s  subline, CTAs and proof line rise 8 px
- *   1.6 s  edit pass: title cards hard-cut on V1 every CARD_HOLD_S while the playhead
+ *   (h1, subline, CTAs and proof are static: visible at first paint for LCP)
+ *   0.8 s  edit pass: title cards hard-cut on V1 every CARD_HOLD_S while the playhead
  *          crosses the timeline and the monitor timecode runs; then rests on the final card.
  *
  * The pass plays only while the hero visual is on screen and the tab is visible, runs once
@@ -14,7 +13,7 @@
  * server-rendered rest frame is what everyone without motion sees.
  */
 import { gsap, ScrollTrigger } from "../../../lib/gsap";
-import { distance, duration, ease, mq, stagger } from "../../../lib/motion";
+import { duration, ease, mq, stagger } from "../../../lib/motion";
 import { formatTimecode } from "../../ui/timecode";
 import { CARD_HOLD_S } from "./hero-data";
 
@@ -22,8 +21,7 @@ import { CARD_HOLD_S } from "./hero-data";
 const HERO_BEAT = {
   monitorIn: 0.3,
   tracksIn: 0.42,
-  copyIn: 1.5,
-  passIn: 1.6,
+  passIn: 0.8,
 } as const;
 
 /** The pass runs only while the whole monitor is on screen (it waits below the fold on mobile). */
@@ -104,13 +102,13 @@ function build(root: HTMLElement): () => void {
     .fromTo(
       all(root, "[data-hero-in='cut']"),
       { opacity: 1, clipPath: CLIP.cutClosed },
-      { clipPath: CLIP.open, duration: duration.frame, ease: ease.scrub },
+      { clipPath: CLIP.open, duration: duration.frame, ease: ease.scrub, clearProps: "clipPath" },
       HERO_BEAT.monitorIn,
     )
     .fromTo(
       all(root, "[data-hero-in='ruler']"),
       { opacity: 1, clipPath: CLIP.wipeClosed },
-      { clipPath: CLIP.open, duration: duration.base, ease: ease.cut },
+      { clipPath: CLIP.open, duration: duration.base, ease: ease.cut, clearProps: "clipPath" },
       HERO_BEAT.monitorIn,
     )
     .fromTo(
@@ -122,14 +120,14 @@ function build(root: HTMLElement): () => void {
     .fromTo(
       all(root, "[data-hero-in='track']"),
       { opacity: 1, clipPath: CLIP.wipeClosed },
-      { clipPath: CLIP.open, duration: duration.base, ease: ease.cut, stagger: stagger.list },
+      {
+        clipPath: CLIP.open,
+        duration: duration.base,
+        ease: ease.cut,
+        stagger: stagger.list,
+        clearProps: "clipPath",
+      },
       HERO_BEAT.tracksIn,
-    )
-    .fromTo(
-      all(root, "[data-hero-in='rise']"),
-      { opacity: 0, y: distance.nudge },
-      { opacity: 1, y: 0, duration: duration.slow, ease: ease.cut, stagger: stagger.list },
-      HERO_BEAT.copyIn,
     )
     .call(
       () => {

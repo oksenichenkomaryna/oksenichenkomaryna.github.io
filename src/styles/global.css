@@ -5,6 +5,10 @@
  */
 @import "tailwindcss";
 
+/* Don't scan docs/markdown for class names (example classes would end up in the bundle). */
+@source not "../../docs";
+@source not "../../*.md";
+
 /* Dark-only concept: `dark:` variant intentionally unused. */
 
 @theme {

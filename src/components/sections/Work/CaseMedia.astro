@@ -6,10 +6,13 @@
 import MediaPlaceholder from "../../ui/MediaPlaceholder.astro";
 import VideoPlayer from "../../ui/VideoPlayer.astro";
 import type { CaseStudy } from "./caseStudies";
-import { videoSourceFor } from "./caseStudies";
+import { videoSourceFor, type MediaMode } from "./caseStudies";
 
 interface Props {
   media: CaseStudy["data"]["media"];
+  /** Accessible title for the full player. */
+  title: string;
+  mode?: MediaMode;
   fallback?: "none" | "placeholder";
   placeholderLabel?: string;
   placeholderDescription?: string;
@@ -19,13 +22,15 @@ interface Props {
 
 const {
   media,
+  title,
+  mode = "preview",
   fallback = "none",
   placeholderLabel,
   placeholderDescription,
   sizes,
   class: className,
 } = Astro.props;
-const source = videoSourceFor(media);
+const source = videoSourceFor(media, mode, title);
 ---
 
 {source && <VideoPlayer source={source} sizes={sizes} class={className} />}
@@ -35,7 +40,9 @@ const source = videoSourceFor(media);
     <img
       src={media.poster}
       alt={media.alt}
-      class="aspect-video size-full object-cover"
+      width="1920"
+      height="1080"
+      class="aspect-video w-full object-cover"
       loading="lazy"
       decoding="async"
     />

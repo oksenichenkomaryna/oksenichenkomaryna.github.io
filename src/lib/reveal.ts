@@ -4,7 +4,7 @@
  *   data-reveal="cut"   → hard cut: clip-path snaps open in ~one frame + tiny settle (concept C)
  *   data-reveal="rise"  → fade + 24px rise
  *   data-reveal="beat"  → SplitText words cut in on the beat (headlines)
- *   data-reveal-group   → on a parent: its direct [data-reveal] children stagger
+ *   data-reveal-group   → on a parent: the [data-reveal] elements inside it stagger
  *
  * Initial hidden state comes from CSS (html.js-motion [data-reveal] { opacity: 0 }) so there
  * is no flash. Under reduced motion html.js-motion is absent → everything is visible and
@@ -14,6 +14,9 @@ import { gsap, ScrollTrigger, SplitText } from "./gsap";
 import { distance, duration, ease, mq, stagger, trigger } from "./motion";
 
 type RevealKind = "cut" | "rise" | "beat";
+
+/** Font shorthand used to await the display face before splitting headings. */
+const DISPLAY_FONT = '800 1em "Inter Tight Variable"';
 
 let ctx: gsap.Context | null = null;
 let splits: SplitText[] = [];
@@ -40,7 +43,13 @@ function animate(el: HTMLElement, delay = 0): gsap.core.Timeline {
     tl.fromTo(
       el,
       { opacity: 1, clipPath: "inset(0 0 100% 0)" },
-      { clipPath: "inset(0 0 0% 0)", duration: duration.frame, ease: ease.scrub },
+      // clearProps: a leftover inline clip-path would clip shadows and hover lifts.
+      {
+        clipPath: "inset(0 0 0% 0)",
+        duration: duration.frame,
+        ease: ease.scrub,
+        clearProps: "clipPath",
+      },
     ).from(el, { y: distance.nudge, duration: duration.base, ease: ease.cut }, 0);
   } else {
     tl.fromTo(
@@ -53,6 +62,7 @@ function animate(el: HTMLElement, delay = 0): gsap.core.Timeline {
 }
 
 function setup(): void {
+  teardown(); // idempotent: a fast navigation can queue two setups behind font loading
   if (!document.documentElement.classList.contains("js-motion")) return;
   if (window.matchMedia(mq.reduced).matches) return;
 
@@ -103,8 +113,12 @@ export function initReveal(): void {
   if (initialized) return;
   initialized = true;
   document.addEventListener("astro:page-load", () => {
-    // Fonts affect SplitText line/word measurement — wait for them.
-    void document.fonts.ready.then(setup);
+    // SplitText measures words: wait for the display face only (not every font file).
+    void document.fonts.load(DISPLAY_FONT).then(setup, setup);
   });
   document.addEventListener("astro:before-swap", teardown);
+  // Reduced motion switched on mid-session → drop all reveal motion (content stays visible).
+  window.matchMedia(mq.reduced).addEventListener("change", (e) => {
+    if (e.matches) teardown();
+  });
 }

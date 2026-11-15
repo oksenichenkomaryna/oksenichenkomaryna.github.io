@@ -75,7 +75,7 @@
     "description": "Screen recordings turned into clear tutorials your users can actually follow.",
     "deliverables": [
       "Screen-capture editing, cut to the steps that matter",
-      "Text highlights and callouts",
+      "Text highlights",
       "Closed captions",
       "Lower thirds and titles"
     ],
@@ -141,7 +141,7 @@
     "id": "real-estate-video",
     "order": 7,
     "title": "Real estate video editing",
-    "description": "Property footage edited into a polished video that helps the listing stand out.",
+    "description": "Property footage edited into a polished video.",
     "deliverables": [
       "Edit of your property footage",
       "Color correction",

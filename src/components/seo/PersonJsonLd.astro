@@ -1,6 +1,8 @@
 ---
 /** schema.org Person JSON-LD for the homepage (lead-owned). Data from content collections only. */
 import { getCollection, getEntry } from "astro:content";
+import { getImage } from "astro:assets";
+import portrait from "../../assets/maryna.webp";
 
 const site = await getEntry("site", "main");
 if (!site) throw new Error("site entry 'main' missing");
@@ -8,15 +10,18 @@ const links = await getCollection("links");
 
 const { name, jobTitle, location, languages, upworkTitle } = site.data;
 
+const home = new URL("/", Astro.site).href;
+const photo = await getImage({ src: portrait, width: 500, format: "jpg" });
+
 const person = {
-  "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${home}#person`,
   name: name.full,
   alternateName: name.short,
   jobTitle,
   description: upworkTitle,
-  url: new URL("/", Astro.site).href,
-  image: new URL("/og.png", Astro.site).href,
+  url: home,
+  image: new URL(photo.src, Astro.site).href,
   address: {
     "@type": "PostalAddress",
     addressLocality: location.city,
@@ -34,6 +39,14 @@ const person = {
   ],
   sameAs: links.map((l) => l.data.url),
 } as const;
+
+/** ProfilePage wraps the Person (Google-supported for single-creator profile sites). */
+const graph = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: home,
+  mainEntity: person,
+} as const;
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(person)} />
+<script type="application/ld+json" set:html={JSON.stringify(graph)} />

@@ -14,8 +14,12 @@ export function getLenis(): Lenis | null {
   return lenis;
 }
 
+/** Touch devices scroll natively (Lenis doesn't smooth touch by default; avoid the rAF loop). */
+const COARSE_POINTER = "(hover: none) and (pointer: coarse)";
+
 function start(): void {
-  if (lenis || window.matchMedia(mq.reduced).matches) return;
+  if (lenis || window.matchMedia(mq.reduced).matches || window.matchMedia(COARSE_POINTER).matches)
+    return;
 
   lenis = new Lenis({ autoRaf: false, anchors: { offset: 0 } });
   lenis.on("scroll", ScrollTrigger.update);
@@ -36,8 +40,9 @@ export function initSmoothScroll(): void {
   document.addEventListener("astro:page-load", start);
   document.addEventListener("astro:before-swap", stop);
   window.matchMedia(mq.reduced).addEventListener("change", (e) => {
-    // Keep the pre-paint flag in sync so content gated on html.js-motion never stays hidden.
-    document.documentElement.classList.toggle("js-motion", !e.matches);
+    // Only ever REMOVE the pre-paint flag mid-session: content gated on html.js-motion must never
+    // become hidden after load (reveal setups ran — or bailed — at page load).
+    if (e.matches) document.documentElement.classList.remove("js-motion");
     if (e.matches) stop();
     else start();
   });
