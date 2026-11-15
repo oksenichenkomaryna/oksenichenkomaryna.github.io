@@ -1,11 +1,11 @@
 # Client facts — SOURCE OF TRUTH (never invent beyond this file)
 
-- Name: Maryna Oksenichenko (Upwork display: "Maryna O.") — display choice PENDING client answer
+- Name: Maryna Oksenichenko (Upwork display: "Maryna O.") — DECISION: show full name "Maryna Oksenichenko" (2026-11-15)
 - Location: Poznań, Poland · Upwork: Verified
 - Upwork title: Expert video/audio editor with Adobe Premiere Pro
 - Experience: 6 years · Adobe Creative Cloud (Premiere Pro, After Effects, Photoshop)
 - Upwork stats: 100% Job Success · 5.0 rating (14 reviews) · 24 total jobs
-- Rate: $20/hr — DO NOT SHOW unless client approves (PENDING)
+- Rate: $20/hr — DECISION: show as "from $X" starting price; X not yet provided — hidden until given
 - Languages: English, Polish, Ukrainian, Russian
 - Positioning (her words, to be rewritten tighter): turns raw footage, audio and graphics into
   engaging videos that show a brand's personality and values; communication is a cornerstone
@@ -53,3 +53,7 @@ Podcast, Rotoscoping, After Effects
 ## Assets on hand
 - client-assets/maryna-photo.webp — 500×500 portrait, outdoors (forest/heath), grey jacket,
   red/black scarf, natural overcast light
+
+## Decisions (2026-11-15)
+- Buyer priority: all four — Podcasters, Course creators / SaaS, Brands / social ads, Real estate (in that order)
+- No media yet: build with typed "needs-asset" placeholders
