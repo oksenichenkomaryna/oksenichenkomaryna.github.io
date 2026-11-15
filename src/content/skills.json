@@ -1,0 +1,54 @@
+[
+  {
+    "id": "tools",
+    "order": 1,
+    "group": "Tools",
+    "note": "Adobe Creative Cloud",
+    "items": [
+      { "label": "Premiere Pro", "tag": "Adobe Premiere Pro", "source": "profile" },
+      { "label": "After Effects", "tag": "After Effects", "source": "profile" },
+      { "label": "Photoshop", "tag": "Adobe Photoshop", "source": "profile" }
+    ]
+  },
+  {
+    "id": "video",
+    "order": 2,
+    "group": "Video",
+    "items": [
+      { "label": "Color correction", "tag": "Video Color Correction", "source": "skill-tag" },
+      { "label": "Intros & outros", "tag": "Video Intro & Outro", "source": "skill-tag" },
+      { "label": "Multicamera editing", "source": "service" },
+      { "label": "Green screen / chroma key", "source": "service" }
+    ]
+  },
+  {
+    "id": "audio",
+    "order": 3,
+    "group": "Audio",
+    "items": [
+      { "label": "Audio post-production", "tag": "Audio Post Production", "source": "skill-tag" },
+      { "label": "Audio editing", "tag": "Audio Editing", "source": "skill-tag" }
+    ]
+  },
+  {
+    "id": "motion-design",
+    "order": 4,
+    "group": "Motion & Design",
+    "items": [
+      { "label": "Video design", "tag": "Video Design", "source": "skill-tag" },
+      { "label": "Rotoscoping", "tag": "Rotoscoping", "source": "skill-tag" }
+    ]
+  },
+  {
+    "id": "formats-industries",
+    "order": 5,
+    "group": "Formats & Industries",
+    "items": [
+      { "label": "Podcasts", "tag": "Podcast", "source": "skill-tag" },
+      { "label": "YouTube", "tag": "YouTube", "source": "skill-tag" },
+      { "label": "Testimonial videos", "tag": "Testimonial Video", "source": "skill-tag" },
+      { "label": "Corporate video", "tag": "Corporate Video", "source": "skill-tag" },
+      { "label": "Education", "tag": "Education", "source": "skill-tag" }
+    ]
+  }
+]

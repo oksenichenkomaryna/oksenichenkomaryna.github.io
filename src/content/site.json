@@ -1,0 +1,21 @@
+[
+  {
+    "id": "main",
+    "name": { "full": "Maryna Oksenichenko", "short": "Maryna O." },
+    "nameDisplay": "full",
+    "nameDisplayPending": true,
+    "_todo": "TODO(client): confirm whether the site shows the full name or the Upwork display name 'Maryna O.'. Using 'full' until answered.",
+    "jobTitle": "Video & Audio Editor",
+    "upworkTitle": "Expert video/audio editor with Adobe Premiere Pro",
+    "location": { "city": "Poznań", "country": "Poland" },
+    "languages": ["English", "Polish", "Ukrainian", "Russian"],
+    "experienceYears": 6,
+    "rate": { "amount": 20, "currency": "USD", "unit": "hour", "show": false },
+    "upworkUrl": "https://www.upwork.com/freelancers/~01ed1ae32899de9bd5",
+    "verified": true,
+    "photo": {
+      "src": "client-assets/maryna-photo.webp",
+      "alt": "Maryna Oksenichenko outdoors in a grey jacket and red-and-black scarf"
+    }
+  }
+]

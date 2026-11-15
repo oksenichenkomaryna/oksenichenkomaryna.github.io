@@ -1,0 +1,6 @@
+[
+  { "id": "job-success", "order": 1, "value": 100, "decimals": 0, "suffix": "%", "label": "Job Success", "detail": "Upwork Job Success Score", "source": "Upwork" },
+  { "id": "rating", "order": 2, "value": 5.0, "decimals": 1, "label": "Rating", "detail": "from 14 client reviews", "source": "Upwork" },
+  { "id": "jobs", "order": 3, "value": 24, "decimals": 0, "label": "Total jobs", "detail": "total jobs on Upwork", "source": "Upwork" },
+  { "id": "experience", "order": 4, "value": 6, "decimals": 0, "suffix": " yrs", "label": "Editing experience", "detail": "Adobe Creative Cloud", "source": "Profile" }
+]

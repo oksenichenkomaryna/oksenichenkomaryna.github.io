@@ -1,0 +1,35 @@
+[
+  {
+    "id": "brief",
+    "order": 1,
+    "title": "Brief",
+    "body": "Send your footage, audio and notes. I confirm length, format, captions and deadline before I cut, so we agree on the result upfront.",
+    "factBasis": ["FACTS.md › Positioning: communication is a cornerstone of her workflow"]
+  },
+  {
+    "id": "first-cut",
+    "order": 2,
+    "title": "First cut",
+    "body": "I sync cameras, clean the audio, cut for pace and add titles, lower thirds or subtitles. You get a first version to review, on the date we set.",
+    "factBasis": [
+      "FACTS.md › Services 4: multicamera sync",
+      "FACTS.md › Work history: background static removal; lower thirds + subtitles"
+    ]
+  },
+  {
+    "id": "revisions",
+    "order": 3,
+    "title": "Revisions",
+    "body": "Tell me what to change. I make the edits and keep you updated — no chasing, no guessing.",
+    "proof": "miles-b-interview",
+    "factBasis": ["FACTS.md › Review, Miles B.: \"made all the changes we needed\"", "FACTS.md › Positioning: communication"]
+  },
+  {
+    "id": "delivery",
+    "order": 4,
+    "title": "Delivery",
+    "body": "Final files, ready to publish, on time. Urgent? I have delivered next-day.",
+    "proof": "dan-r-podcast-audio",
+    "factBasis": ["FACTS.md › Review, Dan R.: \"delivers on time\"", "FACTS.md › Work history: urgent next-day delivery"]
+  }
+]

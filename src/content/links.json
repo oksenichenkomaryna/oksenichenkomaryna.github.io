@@ -1,0 +1,20 @@
+[
+  {
+    "id": "upwork",
+    "platform": "upwork",
+    "url": "https://www.upwork.com/freelancers/~01ed1ae32899de9bd5",
+    "label": "Hire on Upwork",
+    "ariaLabel": "Hire Maryna on Upwork (opens in a new tab)",
+    "rel": ["me", "noopener", "external"],
+    "primary": true
+  },
+  {
+    "id": "facebook",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/maryna.oksenichenko/",
+    "label": "Facebook",
+    "ariaLabel": "Maryna on Facebook (opens in a new tab)",
+    "rel": ["me", "noopener", "external"],
+    "primary": false
+  }
+]

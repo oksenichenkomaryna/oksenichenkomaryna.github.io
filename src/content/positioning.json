@@ -1,0 +1,45 @@
+[
+  {
+    "id": "main",
+    "eyebrow": "Video & Audio Editor · Premiere Pro · 6 years",
+    "headline": "Podcasts, interviews and courses — edited and on time.",
+    "subline": "I turn raw multi-camera footage and noisy audio into clean, captioned videos and short clips — with clear communication and on-time delivery.",
+    "alternatives": [
+      {
+        "headline": "You hit record. I deliver the finished edit.",
+        "angle": "Outcome / relief: speaks to busy podcasters and founders who just want it done. Needs the eyebrow to say WHAT she edits."
+      },
+      {
+        "headline": "Raw footage in. Clean, captioned video out.",
+        "angle": "Craft / transformation: sets up a before/after section. Strongest once real before/after samples exist."
+      },
+      {
+        "headline": "Podcasts, interviews, courses — edited fast, delivered on time.",
+        "angle": "Speed-led variant of the main headline; backed by next-day delivery and 8 videos in 3 days."
+      }
+    ],
+    "fiveSecond": {
+      "what": "Video & audio editing in Premiere Pro and After Effects",
+      "forWhom": "Podcasters, course creators, brands, real-estate agents and SaaS teams",
+      "why": "100% Job Success and a 5.0 rating from 14 Upwork reviews; clients mention fast, on-time delivery",
+      "line": "I edit podcasts, interviews, ads and course videos for creators and brands — 100% Job Success and 5.0 from 14 reviews on Upwork."
+    },
+    "cta": {
+      "primary": { "label": "Hire me on Upwork", "link": "upwork" },
+      "secondary": { "label": "See the work", "href": "#work" }
+    },
+    "about": [
+      "I'm Maryna, a video and audio editor based in Poznań, Poland, with 6 years of editing in Adobe Premiere Pro, After Effects and Photoshop.",
+      "I take your raw footage, audio and graphics and shape them into videos that sound clean, look consistent and carry your brand's personality.",
+      "Communication is the core of how I work: you always know where your edit stands. I work in English, Polish, Ukrainian and Russian."
+    ],
+    "factBasis": [
+      "FACTS.md › Positioning (her words)",
+      "FACTS.md › Experience: 6 years · Adobe Creative Cloud",
+      "FACTS.md › Upwork stats",
+      "FACTS.md › Languages",
+      "FACTS.md › Client reviews (fast / delivers on time)",
+      "FACTS.md › Work history: multi-angle interviews, background static removal, subtitles, short clips"
+    ]
+  }
+]

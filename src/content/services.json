@@ -1,0 +1,113 @@
+[
+  {
+    "id": "podcast-editing",
+    "order": 1,
+    "title": "Video podcast editing",
+    "description": "Your long recording becomes a clean full episode plus short clips ready to post.",
+    "deliverables": [
+      "Full video episode, cut for pace",
+      "Audio cleanup, including background static removal",
+      "Short-form clips cut from the long episode",
+      "Intro and outro"
+    ],
+    "audience": ["podcasters", "brands"],
+    "relatedSkills": ["Podcast", "Audio Editing", "Audio Post Production", "Video Intro & Outro", "Adobe Premiere Pro"],
+    "media": { "status": "needs-asset", "request": "Poster frame + 15–30 s clip from a podcast edit (and one short clip cut from it)." },
+    "factBasis": ["FACTS.md › Services 1", "FACTS.md › Work history: podcast audio + video (Zencastr); background static removal"]
+  },
+  {
+    "id": "social-video-ads",
+    "order": 2,
+    "title": "Video ads for social media",
+    "description": "Short ads that stop the scroll and show your brand's personality.",
+    "deliverables": [
+      "Ad edit from your raw footage and graphics",
+      "Subtitles for sound-off viewing",
+      "Color correction for a consistent look",
+      "Motion graphics in After Effects"
+    ],
+    "audience": ["brands", "saas"],
+    "relatedSkills": ["Video Design", "Video Color Correction", "After Effects", "Adobe Photoshop"],
+    "media": { "status": "needs-asset", "request": "One finished social ad (vertical or square) + poster frame, with permission to show it." },
+    "factBasis": ["FACTS.md › Services 2", "FACTS.md › Positioning: brand's personality and values", "FACTS.md › Skills"]
+  },
+  {
+    "id": "green-screen",
+    "order": 3,
+    "title": "Green screen editing",
+    "description": "Clean keys and matched color, so your subject sits naturally in the new background.",
+    "deliverables": [
+      "Chroma key background removal",
+      "Color grading to match subject and background",
+      "Rotoscoping for edges a key can't handle"
+    ],
+    "audience": ["brands", "educators", "saas"],
+    "relatedSkills": ["Video Color Correction", "Rotoscoping", "After Effects", "Adobe Premiere Pro"],
+    "media": { "status": "needs-asset", "request": "Before/after frame pair: raw green-screen shot vs final composite." },
+    "factBasis": ["FACTS.md › Services 3", "FACTS.md › Skills: Rotoscoping, Video Color Correction"]
+  },
+  {
+    "id": "multicamera-editing",
+    "order": 4,
+    "title": "Multicamera editing",
+    "description": "Two or three cameras synced to your best mic track and cut like a show.",
+    "deliverables": [
+      "Camera sync to the quality mic recording",
+      "Angle switching across 2–3 cameras",
+      "Color correction to match cameras",
+      "Audio editing and cleanup"
+    ],
+    "audience": ["podcasters", "brands", "educators"],
+    "relatedSkills": ["Adobe Premiere Pro", "Video Color Correction", "Audio Editing", "Podcast"],
+    "media": { "status": "needs-asset", "request": "15–30 s clip from a 2–3 camera interview edit showing angle switches." },
+    "factBasis": ["FACTS.md › Services 4", "FACTS.md › Work history: multi-angle interview edits (2–3 cameras)"]
+  },
+  {
+    "id": "real-estate-video",
+    "order": 5,
+    "title": "Real estate video editing",
+    "description": "Property footage edited into a polished video that helps the listing stand out.",
+    "deliverables": [
+      "Edit of your property footage",
+      "Color correction",
+      "Branded intro and outro",
+      "Audio editing"
+    ],
+    "audience": ["real-estate"],
+    "relatedSkills": ["Video Color Correction", "Video Intro & Outro", "Audio Editing", "Adobe Premiere Pro"],
+    "media": { "status": "needs-asset", "request": "One real-estate edit (or 20–30 s excerpt) + poster frame." },
+    "factBasis": ["FACTS.md › Services 5", "FACTS.md › Skills"]
+  },
+  {
+    "id": "software-tutorials",
+    "order": 6,
+    "title": "Software & platform tutorials",
+    "description": "Screen recordings turned into clear tutorials your users can actually follow.",
+    "deliverables": [
+      "Screen-capture editing, cut to the steps that matter",
+      "Text highlights and callouts",
+      "Closed captions",
+      "Lower thirds and titles"
+    ],
+    "audience": ["saas", "educators"],
+    "relatedSkills": ["Education", "Corporate Video", "Video Design", "Adobe Premiere Pro"],
+    "media": { "status": "needs-asset", "request": "Excerpt from a software tutorial showing highlights + captions." },
+    "factBasis": ["FACTS.md › Services 6", "FACTS.md › Services 7 (text highlights, screen captures, closed captions)", "FACTS.md › Work history: lower thirds + subtitles"]
+  },
+  {
+    "id": "online-course-editing",
+    "order": 7,
+    "title": "Online course editing",
+    "description": "Course lessons that are easy to watch, easy to follow and consistent across modules.",
+    "deliverables": [
+      "Lesson edits with text highlights",
+      "Screen captures woven into talking-head footage",
+      "Closed captions",
+      "Batch delivery for multi-lesson courses"
+    ],
+    "audience": ["educators"],
+    "relatedSkills": ["Education", "YouTube", "Video Design", "Adobe Premiere Pro"],
+    "media": { "status": "needs-asset", "request": "One course lesson excerpt with text highlights and captions." },
+    "factBasis": ["FACTS.md › Services 7", "FACTS.md › Work history: 8 × 3-min videos in 3 days"]
+  }
+]
