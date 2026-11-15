@@ -16,6 +16,5 @@ function register(): void {
 
 register();
 
-// React islands that need useGSAP import it from "@gsap/react" locally — keeping it out of this
-// shared module avoids shipping React core to every page (perf audit).
+// Kept free of React on purpose: a shared useGSAP import shipped React core to every page.
 export { gsap, ScrollTrigger, SplitText };

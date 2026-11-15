@@ -138,17 +138,39 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   import { formatTimecode } from "../ui/timecode";
 
   let triggers: ScrollTrigger[] = [];
+  let menuAbort: AbortController | null = null;
 
   function setup(): void {
     const ruler = document.querySelector<HTMLElement>("[data-ruler]");
     if (!ruler) return;
     const timecode = ruler.querySelector<HTMLElement>("[data-timecode]");
 
-    // Mobile chapter menu: close after choosing a section.
+    // Mobile chapter menu: closes on link click, Escape and outside click.
+    // All listeners share one AbortController, aborted on the next page swap.
     const menu = ruler.querySelector<HTMLDetailsElement>("[data-chapter-menu]");
-    menu
-      ?.querySelectorAll("a")
-      .forEach((a) => a.addEventListener("click", () => (menu.open = false)));
+    if (menu) {
+      menuAbort = new AbortController();
+      const { signal } = menuAbort;
+      menu
+        .querySelectorAll("a")
+        .forEach((a) => a.addEventListener("click", () => (menu.open = false), { signal }));
+      document.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key !== "Escape" || !menu.open) return;
+          menu.open = false;
+          menu.querySelector("summary")?.focus();
+        },
+        { signal },
+      );
+      document.addEventListener(
+        "pointerdown",
+        (e) => {
+          if (menu.open && e.target instanceof Node && !menu.contains(e.target)) menu.open = false;
+        },
+        { signal },
+      );
+    }
 
     triggers.push(
       ScrollTrigger.create({
@@ -182,6 +204,8 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   function teardown(): void {
     triggers.forEach((t) => t.kill());
     triggers = [];
+    menuAbort?.abort();
+    menuAbort = null;
   }
 
   document.addEventListener("astro:page-load", setup);

@@ -62,7 +62,7 @@ const videoJsonLd =
     : null;
 
 // Portfolio-voiced meta description (the `brief` reads like a job post). Facts only.
-const metaDescription = `${title}: ${output.replace(/\.$/, "")}. Edited by ${site.data.name.full}, freelance ${site.data.jobTitle.toLowerCase()} working in Adobe Premiere Pro.`;
+const metaDescription = `${output.replace(/\.$/, "")}. Case study by ${site.data.name.full}, freelance ${site.data.jobTitle.toLowerCase()} working in Adobe Premiere Pro.`;
 ---
 
 <PageLayout
@@ -112,13 +112,15 @@ const metaDescription = `${title}: ${output.replace(/\.$/, "")}. Edited by ${sit
         </dl>
       )}
 
-      <ul class="flex flex-wrap gap-2" aria-label="Services">
-        {services.map((s) => (
-          <Tag as="li" font="sans">
-            {s.data.title}
-          </Tag>
-        ))}
-      </ul>
+      {services.length > 0 && (
+        <ul class="flex flex-wrap gap-2" aria-label="Services">
+          {services.map((s) => (
+            <Tag as="li" font="sans">
+              {s.data.title}
+            </Tag>
+          ))}
+        </ul>
+      )}
     </header>
 
     <CaseMedia

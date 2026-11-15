@@ -90,7 +90,8 @@ const site = defineCollection({
       display: z.enum(["exact", "from"]),
     }),
     verified: z.boolean(),
-    photo: z.object({ src: z.string().min(1), alt: z.string().min(1) }),
+    /** The image itself is src/assets/maryna.webp (optimised by astro:assets). */
+    photo: z.object({ alt: z.string().min(1) }),
   }),
 });
 

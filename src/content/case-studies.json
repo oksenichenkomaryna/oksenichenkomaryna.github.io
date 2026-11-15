@@ -113,10 +113,7 @@
     "category": "short-form",
     "title": "Zoom interview cut into short clips",
     "brief": "Turn a recorded Zoom interview into short clips.",
-    "whatSheDid": [
-      "Cut the recorded Zoom interview into short clips",
-      "Delivered each clip as a standalone video"
-    ],
+    "whatSheDid": ["Worked from the recorded Zoom interview", "Cut it into short clips"],
     "output": "Short clips from one Zoom interview",
     "format": "short-clips",
     "source": "Zoom recording",
