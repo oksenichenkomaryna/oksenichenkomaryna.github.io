@@ -1,0 +1,57 @@
+---
+/**
+ * One process step = one sequence marker on the ruler.
+ * Mobile: marker column on the left, its stem continues down as the vertical ruler.
+ * md+: marker row on top, its line continues right as the horizontal ruler.
+ * The optional proof chip links to the verbatim review (attribution only, no partial quote).
+ */
+import Heading from "../../ui/Heading.astro";
+import Icon from "../../ui/Icon.astro";
+import Timecode from "../../ui/Timecode.astro";
+
+interface Props {
+  order: number;
+  title: string;
+  body: string;
+  /** Decorative ruler position of this marker, in seconds. */
+  at: number;
+  proof?: { id: string; author: string; source: string };
+}
+
+const { order, title, body, at, proof } = Astro.props;
+const number = String(order).padStart(2, "0");
+---
+
+<li class="flex gap-5 md:flex-col md:gap-6" data-reveal="cut">
+  <!-- Marker + ruler segment (decorative). size-4 column keeps the diamond centred on the rule. -->
+  <div
+    aria-hidden="true"
+    class="flex w-4 shrink-0 flex-col items-center md:h-8 md:w-full md:flex-row"
+  >
+    <span class="mt-1.5 size-2.5 shrink-0 rotate-45 rounded-xs bg-playhead md:mt-0"></span>
+    <span class="mt-2 w-px flex-1 bg-line md:mt-0 md:ml-2 md:h-px md:w-auto"></span>
+  </div>
+
+  <div class="flex flex-col gap-3 pb-12 md:pr-8 md:pb-0">
+    <p aria-hidden="true" class="flex items-center gap-3 font-mono text-label text-muted">
+      <span class="text-paper">{number}</span>
+      <Timecode seconds={at} />
+    </p>
+    <Heading level={3}>
+      <span class="sr-only">Step {order}: </span>
+      {title}
+    </Heading>
+    <p class="max-w-prose text-body text-muted">{body}</p>
+    {proof && (
+      <a
+        href={`/#review-${proof.id}`}
+        class="mt-1 inline-flex items-center gap-2 self-start rounded-xs border border-line bg-ink/40 px-2.5 py-1 font-mono text-label text-muted hover:border-paper hover:text-paper motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut"
+      >
+        <Icon name="star" size="sm" class="text-playhead" />
+        <span class="sr-only">Client review by </span>
+        <span aria-hidden="true">—</span>
+        {proof.author}, {proof.source}
+      </a>
+    )}
+  </div>
+</li>

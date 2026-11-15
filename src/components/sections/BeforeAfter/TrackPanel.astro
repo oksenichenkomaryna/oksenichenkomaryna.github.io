@@ -1,0 +1,42 @@
+---
+/**
+ * One proof panel framed as a timeline track: a colored track edge (V1 = clip-v,
+ * A1 = clip-a), a mono track id, an h3, then the comparison in the default slot.
+ * Optional `footer` slot for the technical note / related link.
+ */
+import clsx from "clsx";
+import Heading from "../../ui/Heading.astro";
+
+const trackVariants = {
+  video: { edge: "border-clip-v", id: "text-clip-v", swatch: "bg-clip-v", code: "V1" },
+  audio: { edge: "border-clip-a", id: "text-clip-a", swatch: "bg-clip-a", code: "A1" },
+} as const;
+
+interface Props {
+  track: keyof typeof trackVariants;
+  title: string;
+  class?: string;
+}
+
+const { track, title, class: className } = Astro.props;
+const t = trackVariants[track];
+---
+
+<div class={clsx("flex flex-col gap-5 border-t-2 pt-5", t.edge, className)} data-reveal="cut">
+  <div class="flex items-center gap-3">
+    <span
+      aria-hidden="true"
+      class={clsx("inline-flex items-center gap-2 font-mono text-label uppercase", t.id)}
+    >
+      <span class={clsx("size-1.5", t.swatch)}></span>
+      {t.code}
+    </span>
+    <Heading level={3}>{title}</Heading>
+  </div>
+  <slot />
+  {Astro.slots.has("footer") && (
+    <div class="flex flex-col gap-3">
+      <slot name="footer" />
+    </div>
+  )}
+</div>

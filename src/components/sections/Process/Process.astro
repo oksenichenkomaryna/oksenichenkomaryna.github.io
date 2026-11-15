@@ -1,0 +1,108 @@
+---
+/**
+ * Process — 4 sequence markers on a ruler (brief → first cut → revisions → delivery).
+ * Horizontal ruler on md+, vertical below. Ordered list semantics.
+ * Signature motion: process-scrub.ts scrubs a playhead along the ruler with scroll.
+ */
+import { getCollection, getEntry } from "astro:content";
+import clsx from "clsx";
+import Heading from "../../ui/Heading.astro";
+import Section from "../../ui/Section.astro";
+import ProcessStep from "./ProcessStep.astro";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "process";
+
+/** Decorative ruler spacing between markers, in seconds of "sequence time". */
+const SECONDS_PER_STEP = 12;
+
+const steps = await Promise.all(
+  (await getCollection("process"))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async ({ data }) => {
+      const review = data.proof ? await getEntry(data.proof) : undefined;
+      if (data.proof && !review) throw new Error(`process '${data.id}': proof review missing`);
+      return {
+        ...data,
+        at: (data.order - 1) * SECONDS_PER_STEP,
+        proof: review && {
+          id: review.data.id,
+          author: review.data.author,
+          source: review.data.source,
+        },
+      };
+    }),
+);
+
+/** Ruler ticks between markers: 12 per step, a taller one every 3rd (decorative). */
+const TICKS_PER_STEP = 12;
+const ticks = Array.from({ length: steps.length * TICKS_PER_STEP }, (_, i) => i);
+const tickVariants = { major: "h-2", minor: "h-1" } as const;
+---
+
+<Section id={sectionId} marker={marker}>
+  <div class="max-w-prose" data-reveal="cut">
+    <Heading level={2} id={`${sectionId}-title`} eyebrow="Sequence markers">
+      From brief to delivery
+    </Heading>
+  </div>
+
+  <div class="relative mt-14" data-process>
+    <!-- md+: tick marks hanging under the horizontal ruler line (decorative) -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-0 top-4 hidden items-start md:flex"
+    >
+      {ticks.map((i) => (
+        <span class="flex-1">
+          {i % TICKS_PER_STEP !== 0 && (
+            <span
+              class={clsx("block w-px bg-line", tickVariants[i % 3 === 0 ? "major" : "minor"])}
+            />
+          )}
+        </span>
+      ))}
+    </div>
+
+    <ol class="relative grid md:grid-cols-4">
+      {steps.map((step) => (
+        <ProcessStep
+          order={step.order}
+          title={step.title}
+          body={step.body}
+          at={step.at}
+          proof={step.proof}
+        />
+      ))}
+    </ol>
+
+    <!-- Playheads (decorative). Each is a full-size layer in an overflow-hidden track;
+         process-scrub.ts translates it 0→100% with scroll. Static at the start otherwise. -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-0 top-0 hidden h-8 overflow-hidden md:block"
+    >
+      <div data-playhead="x" class="absolute inset-0">
+        <span class="absolute inset-y-0 left-1 w-px bg-playhead"></span>
+        <span class="absolute top-0 left-1 h-2 w-2.5 -translate-x-1/2 rounded-b-xs bg-playhead"></span>
+      </div>
+    </div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-y-0 left-0 w-4 overflow-hidden md:hidden"
+    >
+      <div data-playhead="y" class="absolute inset-0">
+        <span class="absolute inset-x-0 top-2.5 h-px bg-playhead shadow-playhead"></span>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<script>
+  import { initProcessScrub } from "./process-scrub";
+  initProcessScrub();
+</script>

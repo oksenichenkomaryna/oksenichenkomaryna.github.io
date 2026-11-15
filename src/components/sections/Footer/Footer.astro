@@ -1,0 +1,64 @@
+---
+/**
+ * Site footer (contentinfo) — the out-point of the timeline: a final timecode
+ * marker, name / role / location, social links and "Back to top".
+ * No props: rendered by PageLayout on every page.
+ */
+import { getEntry } from "astro:content";
+import Icon from "../../ui/Icon.astro";
+import SocialLinks from "../../ui/SocialLinks.astro";
+import Timecode from "../../ui/Timecode.astro";
+import { SEQUENCE_RUNTIME_S } from "../../../lib/motion";
+
+const site = await getEntry("site", "main");
+if (!site) throw new Error("site collection: entry 'main' missing");
+
+const { name, jobTitle, location } = site.data;
+const year = new Date().getFullYear();
+
+/** Decorative sequence end = the ruler's full runtime. */
+const SEQUENCE_END_S = SEQUENCE_RUNTIME_S;
+const TICKS = 24; // decorative ruler density
+---
+
+<footer class="border-t border-line bg-ink">
+  <!-- end-of-timeline strip: ruler ticks running into an out-point marker (decorative) -->
+  <div aria-hidden="true" class="mx-auto flex max-w-content items-center gap-3 px-gutter pt-6">
+    <div class="flex h-2 flex-1 items-end justify-between">
+      {Array.from({ length: TICKS }, (_, i) => (
+        <span class:list={["w-px bg-line", i % 4 === 0 ? "h-2" : "h-1"]} />
+      ))}
+    </div>
+    <span class="flex items-center gap-2 font-mono text-label text-muted uppercase">
+      <span class="h-3 w-px bg-playhead"></span>
+      Out
+      <Timecode seconds={SEQUENCE_END_S} tone="paper" />
+    </span>
+  </div>
+
+  <div class="mx-auto flex max-w-content flex-col gap-8 px-gutter py-10 md:flex-row md:items-center md:justify-between">
+    <div class="flex flex-col gap-1">
+      <p class="font-display text-body font-semibold text-paper">{name.full}</p>
+      <p class="text-body-sm text-muted">
+        {jobTitle} · {location.city}, {location.country}
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4">
+      <SocialLinks size="sm" />
+      <a
+        href="#top"
+        class="inline-flex min-h-9 items-center gap-1.5 rounded-sm px-2 font-mono text-label text-muted uppercase hover:text-paper motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut"
+      >
+        Back to top
+        <Icon name="arrow-right" size="sm" class="-rotate-90" />
+      </a>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <p class="mx-auto max-w-content px-gutter py-5 font-mono text-label text-muted">
+      © {year} {name.full} · {jobTitle} · {location.city}, {location.country}
+    </p>
+  </div>
+</footer>

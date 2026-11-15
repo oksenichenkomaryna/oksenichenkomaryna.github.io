@@ -1,0 +1,125 @@
+---
+/**
+ * Selected work — a "bin" of clip cards, featured first. Category filter is progressive
+ * enhancement: without JS every card is visible (each shows its category); with JS a row of
+ * aria-pressed toggle buttons filters by category and announces the result.
+ */
+import { getCollection } from "astro:content";
+import clsx from "clsx";
+import Section from "../../ui/Section.astro";
+import Heading from "../../ui/Heading.astro";
+import WorkCard from "./WorkCard.astro";
+import { categories, sortForGrid } from "./caseStudies";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "work";
+
+const items = sortForGrid(await getCollection("caseStudies"));
+const filters = [
+  { id: "all", label: "All", count: items.length },
+  ...categories
+    .map((c) => ({
+      id: c.id,
+      label: c.label,
+      count: items.filter((i) => i.data.category === c.id).length,
+    }))
+    .filter((c) => c.count > 0),
+];
+
+const filterButton = clsx(
+  "inline-flex h-9 items-center gap-2 rounded-sm border px-3 font-mono text-label uppercase",
+  "border-line text-muted hover:border-paper hover:text-paper",
+  "aria-pressed:border-playhead aria-pressed:bg-playhead aria-pressed:text-ink",
+  "motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut",
+);
+---
+
+<Section id={sectionId} {marker}>
+  <div class="mb-10 flex flex-col gap-8 md:mb-12 lg:flex-row lg:items-end lg:justify-between">
+    <Heading level={2} id={`${sectionId}-title`}>
+      Selected work
+    </Heading>
+
+    <div
+      role="group"
+      aria-label="Filter work by category"
+      class="flex flex-wrap gap-2"
+      hidden
+      data-work-filter
+    >
+      {filters.map((f) => (
+        <button
+          type="button"
+          class={filterButton}
+          aria-pressed={f.id === "all" ? "true" : "false"}
+          data-filter={f.id}
+          data-label={f.label}
+        >
+          {f.label}
+          <span class="opacity-70 tabular-nums">{f.count}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <p class="sr-only" aria-live="polite" data-work-status></p>
+
+  <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-12" data-reveal-group>
+    {items.map((item) => (
+      <WorkCard item={item} />
+    ))}
+  </ul>
+</Section>
+
+<script>
+  import { ScrollTrigger } from "../../../lib/gsap";
+
+  let controller: AbortController | null = null;
+
+  function init(): void {
+    const section = document.getElementById("work");
+    const toolbar = section?.querySelector<HTMLElement>("[data-work-filter]");
+    const status = section?.querySelector<HTMLElement>("[data-work-status]");
+    if (!section || !toolbar || !status || toolbar.dataset.initialized !== undefined) return;
+    toolbar.dataset.initialized = "";
+
+    controller = new AbortController();
+    const buttons = Array.from(toolbar.querySelectorAll<HTMLButtonElement>("[data-filter]"));
+    const cards = Array.from(section.querySelectorAll<HTMLElement>("li[data-category]"));
+
+    const apply = (filter: string, label: string): void => {
+      let shown = 0;
+      for (const card of cards) {
+        const match = filter === "all" || card.dataset.category === filter;
+        card.hidden = !match;
+        if (match) shown += 1;
+      }
+      for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.filter === filter));
+      status.textContent = `${label}: ${shown} ${shown === 1 ? "project" : "projects"}`;
+      ScrollTrigger.refresh();
+    };
+
+    toolbar.addEventListener(
+      "click",
+      (e) => {
+        const button = (e.target as Element).closest<HTMLButtonElement>("[data-filter]");
+        if (!button?.dataset.filter) return;
+        apply(button.dataset.filter, button.dataset.label ?? "");
+      },
+      { signal: controller.signal },
+    );
+    toolbar.hidden = false;
+  }
+
+  function cleanup(): void {
+    controller?.abort();
+    controller = null;
+  }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>

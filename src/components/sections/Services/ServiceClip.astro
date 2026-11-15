@@ -1,0 +1,120 @@
+---
+/**
+ * One service = one clip on its own track. Desktop: track header column + clip lane;
+ * mobile: stacked card with the track label above. Deliverables are always visible —
+ * hover/focus only "trims" the clip (decorative handles + range bar, transform-only).
+ */
+import type { CollectionEntry } from "astro:content";
+import Card from "../../ui/Card.astro";
+import Heading from "../../ui/Heading.astro";
+import Icon from "../../ui/Icon.astro";
+import Tag from "../../ui/Tag.astro";
+import { audienceLabels } from "./services";
+
+interface Props {
+  service: CollectionEntry<"services">;
+  /** 1-based track number (V1, V2, …). */
+  track: number;
+  related?: { href: string; title: string };
+}
+
+const { service, track, related } = Astro.props;
+const { id, title, description, deliverables, audience } = service.data;
+const trackLabel = `V${track}`;
+const firstAudience = audience[0];
+const primaryAudience = firstAudience ? audienceLabels[firstAudience] : undefined;
+const titleId = `service-${id}-title`;
+
+const trim =
+  "motion-safe:transition-transform motion-safe:duration-(--duration-base) motion-safe:ease-trim";
+---
+
+<li class="group grid gap-3 md:grid-cols-12 md:gap-0 md:border-b md:border-line" data-reveal="cut">
+  {/* Track header — decorative; audience is also announced via the tags */}
+  <div
+    aria-hidden="true"
+    class="flex items-center gap-3 font-mono text-label uppercase md:col-span-3 md:flex-col md:items-start md:justify-center md:gap-1 md:border-r md:border-line md:py-4 md:pr-4 lg:col-span-2"
+  >
+    <span class="text-clip-v">{trackLabel}</span>
+    {primaryAudience && (
+      <>
+        <span aria-hidden="true" class="text-line md:hidden">
+          ·
+        </span>
+        <span class="text-muted">{primaryAudience}</span>
+      </>
+    )}
+  </div>
+
+  {/* Clip lane */}
+  <div class="md:col-span-9 md:py-3 md:pl-3 lg:col-span-10">
+    <Card as="article" track="video" padding="md" interactive={Boolean(related)} class="h-full">
+      <div class="grid gap-6 lg:grid-cols-2 lg:gap-10">
+        <div class="flex flex-col gap-4">
+          <Heading level={3} id={titleId}>
+            {title}
+          </Heading>
+          <p class="text-body text-paper">{description}</p>
+          <ul class="flex flex-wrap gap-2" aria-label="Good fit for">
+            {audience.map((a) => (
+              <Tag as="li">{audienceLabels[a]}</Tag>
+            ))}
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <ul class="flex flex-col gap-2" aria-label={`${title}: deliverables`}>
+            {deliverables.map((d) => (
+              <li class="flex gap-3 text-body-sm text-paper">
+                <Icon name="check" size="sm" class="mt-0.5 text-clip-v" />
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+          {related && (
+            <a
+              href={related.href}
+              class="group/link mt-auto inline-flex items-center gap-2 self-start text-body-sm text-muted hover:text-paper"
+            >
+              <span>
+                <span class="font-mono text-label uppercase">Related project</span>
+                <span class="sr-only">:</span>
+                <span class="block text-paper underline decoration-line underline-offset-4 group-hover/link:decoration-playhead">
+                  {related.title}
+                </span>
+              </span>
+              <Icon
+                name="arrow-right"
+                size="sm"
+                class="motion-safe:transition-transform motion-safe:duration-(--duration-fast) motion-safe:ease-cut motion-safe:group-hover/link:translate-x-0.5"
+              />
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Trim handles + in/out range (decorative, desktop hover/focus only) */}
+      <span
+        aria-hidden="true"
+        class:list={[
+          "absolute inset-y-0 left-0 hidden w-1 origin-top scale-y-0 bg-playhead md:block md:group-focus-within:scale-y-100 md:group-hover:scale-y-100",
+          trim,
+        ]}
+      ></span>
+      <span
+        aria-hidden="true"
+        class:list={[
+          "absolute inset-y-0 right-0 hidden w-1 origin-bottom scale-y-0 bg-playhead md:block md:group-focus-within:scale-y-100 md:group-hover:scale-y-100",
+          trim,
+        ]}
+      ></span>
+      <span
+        aria-hidden="true"
+        class:list={[
+          "absolute inset-x-0 bottom-0 hidden h-0.5 origin-left scale-x-0 bg-playhead/60 md:block md:group-focus-within:scale-x-100 md:group-hover:scale-x-100",
+          trim,
+        ]}
+      ></span>
+    </Card>
+  </div>
+</li>

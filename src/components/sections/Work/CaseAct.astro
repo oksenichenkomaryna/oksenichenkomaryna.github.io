@@ -1,0 +1,20 @@
+---
+/** One "act" on the case page: a timeline chapter row with a mono track label (h2) + body. */
+interface Props {
+  /** 1-based act number, shown as "01". */
+  index: number;
+  title: string;
+}
+
+const { index, title } = Astro.props;
+---
+
+<li class="grid gap-4 border-b border-line py-10 md:grid-cols-12 md:gap-8" data-reveal="cut">
+  <h2 class="font-mono text-label text-clip-v uppercase md:col-span-3">
+    <span aria-hidden="true">{String(index).padStart(2, "0")} · </span>
+    {title}
+  </h2>
+  <div class="md:col-span-9">
+    <slot />
+  </div>
+</li>

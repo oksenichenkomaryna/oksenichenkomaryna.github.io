@@ -1,0 +1,52 @@
+---
+/**
+ * 404 — "Media offline": the requested clip isn't in the project.
+ * Built to dist/404.html (GitHub Pages serves it for unknown paths).
+ */
+import { getEntry } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import MediaPlaceholder from "../components/ui/MediaPlaceholder.astro";
+
+const [site, upwork] = await Promise.all([getEntry("site", "main"), getEntry("links", "upwork")]);
+if (!site || !upwork) throw new Error("site/links entries missing");
+---
+
+<PageLayout
+  title={`Page not found · ${site.data.name.full}`}
+  description="This page doesn't exist. Head back to the homepage or hire Maryna on Upwork."
+  noindex
+>
+  <section aria-labelledby="not-found-title" class="mx-auto max-w-content px-gutter py-section">
+    <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-7" data-reveal="cut" data-reveal-now>
+        <MediaPlaceholder
+          ratio="16/9"
+          label="Clip not found"
+          description="Media offline: clip not found"
+          timecode={0}
+        />
+      </div>
+
+      <div class="flex flex-col gap-6 lg:col-span-5">
+        <p class="font-mono text-label text-playhead uppercase">Error 404 · Media offline</p>
+        <h1 id="not-found-title" class="font-display text-h2 font-bold text-paper">
+          This clip is offline
+        </h1>
+        <p class="max-w-prose text-body text-muted">
+          The page you're looking for isn't in this sequence — it may have moved or never existed.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <Button href="/" variant="secondary" size="lg">
+            Back to the homepage
+          </Button>
+          <Button href={upwork.data.url} variant="primary" size="lg" external>
+            Hire me on Upwork
+            <Icon slot="icon" name="arrow-up-right" size="md" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>

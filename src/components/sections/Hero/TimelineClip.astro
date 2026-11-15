@@ -1,0 +1,54 @@
+---
+/** One clip block on a hero timeline lane (decorative; the lane is aria-hidden). */
+import clsx from "clsx";
+import type { ClipKind, TimelineClipData } from "./hero-data";
+
+const kindVariants = {
+  video: "border-clip-v bg-clip-v/20 text-paper",
+  audio: "border-clip-a bg-clip-a/10 text-clip-a",
+} as const satisfies Record<ClipKind, string>;
+
+interface Props extends TimelineClipData {
+  kind: ClipKind;
+}
+
+const { kind, start, end, label, bars, highlight = false } = Astro.props;
+const BAR_STEP = 4; // SVG units per waveform bar
+---
+
+<!-- arbitrary values: clip position/length come from data as 0–1 CSS vars -->
+<div
+  class="absolute inset-y-0 left-[calc(var(--start)*100%)] w-[calc(var(--len)*100%)] px-px"
+  style={`--start: ${start}; --len: ${end - start}`}
+>
+  <div
+    class={clsx(
+      "relative flex h-full items-center overflow-hidden rounded-xs border-l-2",
+      kindVariants[kind],
+    )}
+  >
+    {highlight && <span class="absolute inset-0 bg-clip-v/40 opacity-0" data-hero-clip />}
+    {bars && (
+      <svg
+        viewBox={`0 0 ${bars.length * BAR_STEP} 20`}
+        preserveAspectRatio="none"
+        class="absolute inset-0 size-full opacity-70"
+        fill="currentColor"
+      >
+        {bars.map((v, i) => (
+          <rect x={i * BAR_STEP + 1} y={10 - v * 9} width="2" height={Math.max(v * 18, 1)} />
+        ))}
+      </svg>
+    )}
+    {label && (
+      <span
+        class={clsx(
+          "relative truncate px-1.5 font-mono text-label leading-none uppercase",
+          bars && "ml-0.5 rounded-xs bg-ink/80 py-0.5",
+        )}
+      >
+        {label}
+      </span>
+    )}
+  </div>
+</div>

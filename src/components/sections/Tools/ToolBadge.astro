@@ -1,0 +1,50 @@
+---
+/**
+ * One app in the tools row: a typographic square badge ("Pr", "Ae", "Ps") in
+ * track colours — deliberately NOT the Adobe logos (trademarks).
+ */
+import clsx from "clsx";
+
+const toneVariants = {
+  video: "border-clip-v/50 text-clip-v",
+  audio: "border-clip-a/50 text-clip-a",
+  neutral: "border-line text-paper",
+} as const;
+
+type Tone = keyof typeof toneVariants;
+
+/** Known apps → badge abbreviation + track tone. Unknown labels fall back to initials. */
+const known: Record<string, { abbr: string; tone: Tone }> = {
+  "Premiere Pro": { abbr: "Pr", tone: "video" },
+  "After Effects": { abbr: "Ae", tone: "video" },
+  Photoshop: { abbr: "Ps", tone: "neutral" },
+};
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+
+const initials = (s: string): string =>
+  s
+    .split(/\s+/)
+    .map((w) => w.charAt(0))
+    .join("")
+    .slice(0, 2);
+
+const badge = known[label] ?? { abbr: initials(label), tone: "neutral" as const };
+---
+
+<li class="flex items-center gap-3 rounded-sm border border-line bg-ink/40 p-3 motion-safe:transition-colors motion-safe:duration-(--duration-fast) motion-safe:ease-cut hover:border-muted">
+  <span
+    aria-hidden="true"
+    class={clsx(
+      "grid size-12 shrink-0 place-items-center rounded-xs border-2 bg-panel font-display text-h3 font-bold tracking-tight",
+      toneVariants[badge.tone],
+    )}
+  >
+    {badge.abbr}
+  </span>
+  <span class="text-body-sm font-medium text-paper">{label}</span>
+</li>

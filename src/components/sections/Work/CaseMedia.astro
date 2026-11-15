@@ -1,0 +1,51 @@
+---
+/**
+ * Case-study media slot. `ready` → VideoPlayer (loop) or poster image; otherwise either
+ * nothing (grid cards stay typographic) or a MediaPlaceholder (case page header only).
+ */
+import MediaPlaceholder from "../../ui/MediaPlaceholder.astro";
+import VideoPlayer from "../../ui/VideoPlayer.astro";
+import type { CaseStudy } from "./caseStudies";
+import { videoSourceFor } from "./caseStudies";
+
+interface Props {
+  media: CaseStudy["data"]["media"];
+  fallback?: "none" | "placeholder";
+  placeholderLabel?: string;
+  placeholderDescription?: string;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  media,
+  fallback = "none",
+  placeholderLabel,
+  placeholderDescription,
+  sizes,
+  class: className,
+} = Astro.props;
+const source = videoSourceFor(media);
+---
+
+{source && <VideoPlayer source={source} sizes={sizes} class={className} />}
+
+{!source && media.status === "ready" && (
+  <div class:list={["overflow-hidden rounded-sm border border-line bg-ink", className]}>
+    <img
+      src={media.poster}
+      alt={media.alt}
+      class="aspect-video size-full object-cover"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+)}
+
+{media.status === "needs-asset" && fallback === "placeholder" && (
+  <MediaPlaceholder
+    label={placeholderLabel}
+    description={placeholderDescription}
+    class={className}
+  />
+)}

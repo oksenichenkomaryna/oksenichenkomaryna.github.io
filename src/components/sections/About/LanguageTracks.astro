@@ -1,0 +1,39 @@
+---
+/**
+ * Languages as audio tracks: "A1 · EN · English". Track number + code are visual
+ * sugar (aria-hidden); the full language name is the visible, accessible text.
+ */
+
+/** ISO 639-1 codes for the languages we know; unknown names fall back to their first two letters. */
+const codes: Record<string, string> = {
+  English: "EN",
+  Polish: "PL",
+  Ukrainian: "UK",
+  Russian: "RU",
+};
+
+interface Props {
+  languages: string[];
+}
+
+const { languages } = Astro.props;
+const codeFor = (name: string): string => codes[name] ?? name.slice(0, 2).toUpperCase();
+---
+
+<ul class="flex flex-col gap-1.5">
+  {languages.map((name, i) => (
+    <li class="flex items-center gap-3">
+      <span
+        aria-hidden="true"
+        class="w-8 shrink-0 rounded-xs bg-clip-a/15 px-1.5 py-0.5 text-center font-mono text-label text-clip-a"
+      >
+        A{i + 1}
+      </span>
+      <span aria-hidden="true" class="w-6 shrink-0 font-mono text-label text-muted">
+        {codeFor(name)}
+      </span>
+      <span>{name}</span>
+      <span aria-hidden="true" class="h-px flex-1 bg-clip-a/25" />
+    </li>
+  ))}
+</ul>

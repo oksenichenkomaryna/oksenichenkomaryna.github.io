@@ -1,0 +1,22 @@
+---
+/**
+ * Site page shell (lead-owned): BaseLayout + timeline ruler + footer.
+ * Use for every public page. Props pass straight through to BaseLayout.
+ */
+import type { ComponentProps } from "astro/types";
+import BaseLayout from "./BaseLayout.astro";
+import TimelineRuler from "../components/chrome/TimelineRuler.astro";
+import Footer from "../components/sections/Footer/Footer.astro";
+import { chapters } from "../lib/chapters";
+
+type Props = ComponentProps<typeof BaseLayout>;
+
+const navChapters = chapters.filter((c) => c.nav);
+---
+
+<BaseLayout {...Astro.props}>
+  <slot name="head" slot="head" />
+  <TimelineRuler slot="chrome" chapters={navChapters} />
+  <slot />
+  <Footer slot="footer" />
+</BaseLayout>

@@ -105,10 +105,7 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
 <script>
   import { ScrollTrigger } from "../../lib/gsap";
-  import { TIMECODE_FPS } from "../../lib/motion";
-
-  /** Virtual runtime the page "plays" across, in seconds (decorative). */
-  const RUNTIME_S = 90;
+  import { SEQUENCE_RUNTIME_S, TIMECODE_FPS } from "../../lib/motion";
 
   function format(totalFrames: number): string {
     const ff = totalFrames % TIMECODE_FPS;
@@ -131,7 +128,9 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
         onUpdate: (self) => {
           ruler.style.setProperty("--progress", self.progress.toFixed(4));
           if (timecode)
-            timecode.textContent = format(Math.round(self.progress * RUNTIME_S * TIMECODE_FPS));
+            timecode.textContent = format(
+              Math.round(self.progress * SEQUENCE_RUNTIME_S * TIMECODE_FPS),
+            );
         },
       }),
     );

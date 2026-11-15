@@ -1,0 +1,91 @@
+---
+/**
+ * Reviews — presented as a subtitle track: each verbatim Upwork review is one caption cue
+ * with decorative in/out timecodes. Quotes are NEVER edited (incl. "fast an efficient").
+ * Signature motion: caption-wipe.ts wipes each quote line in left→right (clip-path only).
+ */
+import { getCollection, getEntry } from "astro:content";
+import Button from "../../ui/Button.astro";
+import Heading from "../../ui/Heading.astro";
+import Icon from "../../ui/Icon.astro";
+import Section from "../../ui/Section.astro";
+import StarRating from "../../ui/StarRating.astro";
+import CaptionCue from "./CaptionCue.astro";
+import { toCues } from "./captions";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "reviews";
+
+const reviews = (await getCollection("reviews")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+const rating = await getEntry("stats", "rating");
+if (!rating) throw new Error("stats collection: entry 'rating' missing");
+const upwork = await getEntry("links", "upwork");
+if (!upwork) throw new Error("links collection: entry 'upwork' missing");
+
+const ratingValue = rating.data.value.toFixed(rating.data.decimals);
+// e.g. "5.0 from 14 client reviews on Upwork" — the count lives in stats.json, not here.
+const summary = [ratingValue, rating.data.detail, `on ${rating.data.source}`]
+  .filter(Boolean)
+  .join(" ");
+
+const cues = toCues(
+  reviews.map((r) => r.data),
+  (r) => r.quote,
+);
+---
+
+<Section id={sectionId} marker={marker}>
+  <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+    <div class="max-w-prose" data-reveal="cut">
+      <Heading level={2} id={`${sectionId}-title`} eyebrow="Subtitles · EN · verbatim">
+        What clients say
+      </Heading>
+    </div>
+    <div class="flex flex-col items-start gap-4 md:items-end" data-reveal="cut">
+      <p class="flex items-center gap-3 text-body text-paper">
+        <StarRating rating={rating.data.value} />
+        <span>{summary}</span>
+      </p>
+      <Button href={upwork.data.url} external variant="secondary" size="sm">
+        Read all reviews on Upwork
+        <Icon slot="icon" name="arrow-up-right" size="sm" />
+      </Button>
+    </div>
+  </div>
+
+  <!-- Caption track overview: one clip per cue, length ∝ quote length (decorative) -->
+  <div
+    aria-hidden="true"
+    class="mt-12 flex items-center gap-3 border-y border-line py-2 font-mono text-label text-muted uppercase"
+  >
+    <span class="w-10 shrink-0">SUB</span>
+    <div class="flex min-w-0 flex-1 gap-1">
+      {reviews.map((r, i) => (
+        <span
+          style={`--w: ${r.data.quote.length}`}
+          class="min-w-0 grow-(--w) basis-0 truncate rounded-xs border-l-2 border-paper bg-panel-raised px-2 py-1.5"
+        >
+          C{String(i + 1).padStart(2, "0")} · {r.data.author}
+        </span>
+      ))}
+      <span class="grow basis-0" />
+    </div>
+  </div>
+
+  <div class="flex flex-col">
+    {cues.map((cue, i) => (
+      <CaptionCue review={cue.item} index={i + 1} cueIn={cue.in} cueOut={cue.out} />
+    ))}
+  </div>
+</Section>
+
+<script>
+  import { initCaptionWipe } from "./caption-wipe";
+  initCaptionWipe();
+</script>

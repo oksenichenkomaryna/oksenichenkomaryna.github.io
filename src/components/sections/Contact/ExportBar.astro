@@ -1,0 +1,102 @@
+---
+/**
+ * "EXPORT ▸ 100%" render bar — the contact section's signature moment.
+ * Static at 100% by default (no JS / reduced motion). With motion, it renders
+ * 0 → 100% on scroll-in, then the Hire CTA ([data-export-cta]) gets a small nudge.
+ * The CTA is NEVER hidden (lead decision: the primary conversion button must always be visible).
+ * Purely decorative: aria-hidden.
+ */
+---
+
+<div
+  aria-hidden="true"
+  class="flex flex-col gap-2 rounded-sm border border-line bg-panel p-4 shadow-panel"
+  data-export-bar
+>
+  <div class="flex items-center justify-between gap-4 font-mono text-label uppercase">
+    <span class="flex items-center gap-2 text-paper">
+      <span class="text-playhead">▸</span>
+      <span data-export-status>Export complete</span>
+    </span>
+    <span class="text-muted tabular-nums" data-export-percent>
+      100%
+    </span>
+  </div>
+  <div class="h-1 overflow-hidden rounded-pill bg-line">
+    <div
+      class="h-full origin-left scale-x-(--progress) bg-playhead"
+      style="--progress: 1"
+      data-export-fill
+    ></div>
+  </div>
+</div>
+
+<script>
+  import { gsap, ScrollTrigger } from "../../../lib/gsap";
+  import { duration, ease, distance, mq, trigger } from "../../../lib/motion";
+
+  let mm: gsap.MatchMedia | null = null;
+
+  function setup(): void {
+    if (mm) return;
+    const blocks = document.querySelectorAll<HTMLElement>("[data-export]");
+    if (blocks.length === 0) return;
+    mm = gsap.matchMedia();
+    mm.add(mq.motionOk, () => {
+      const cleanups: (() => void)[] = [];
+      blocks.forEach((block) => {
+        const fill = block.querySelector<HTMLElement>("[data-export-fill]");
+        const percent = block.querySelector<HTMLElement>("[data-export-percent]");
+        const status = block.querySelector<HTMLElement>("[data-export-status]");
+        const cta = block.querySelector<HTMLElement>("[data-export-cta]");
+        if (!fill || !percent || !status || !cta) return;
+
+        const doneLabel = status.textContent ?? "";
+        const progress = { value: 0 };
+        const render = (): void => {
+          fill.style.setProperty("--progress", progress.value.toFixed(4));
+          percent.textContent = `${Math.round(progress.value * 100)}%`;
+        };
+        const setStatus = (text: string) => (): void => {
+          status.textContent = text;
+        };
+
+        // "Not rendered yet" state; the cleanup below restores the static 100% markup.
+        setStatus("Exporting")();
+        render();
+
+        const tl = gsap
+          .timeline({ paused: true })
+          .to(progress, { value: 1, duration: duration.reveal, ease: ease.inOut, onUpdate: render })
+          .call(setStatus(doneLabel))
+          .fromTo(
+            cta,
+            { y: distance.nudge },
+            { y: 0, duration: duration.base, ease: ease.cut, immediateRender: false },
+          );
+
+        ScrollTrigger.create({
+          trigger: block,
+          start: trigger.reveal,
+          once: true,
+          onEnter: () => tl.play(),
+        });
+
+        cleanups.push(() => {
+          progress.value = 1;
+          render();
+          setStatus(doneLabel)();
+        });
+      });
+      return () => cleanups.forEach((fn) => fn());
+    });
+  }
+
+  function teardown(): void {
+    mm?.revert();
+    mm = null;
+  }
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

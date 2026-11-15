@@ -1,0 +1,216 @@
+---
+/**
+ * Case study page. Laid out as timeline chapters: Brief → What she did → Output,
+ * then the related review (verbatim), a hire CTA and prev/next navigation.
+ * The h1 shares `transition:name` with the Work card title (match cut).
+ */
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import { getCollection, getEntries, getEntry } from "astro:content";
+import PageLayout from "../../layouts/PageLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import Heading from "../../components/ui/Heading.astro";
+import Icon from "../../components/ui/Icon.astro";
+import StarRating from "../../components/ui/StarRating.astro";
+import Tag from "../../components/ui/Tag.astro";
+import CaseAct from "../../components/sections/Work/CaseAct.astro";
+import CaseMedia from "../../components/sections/Work/CaseMedia.astro";
+import {
+  caseHref,
+  categoryMeta,
+  creditsFor,
+  formatMonth,
+  sortByOrder,
+} from "../../components/sections/Work/caseStudies";
+
+export const getStaticPaths = (async () => {
+  const items = sortByOrder(await getCollection("caseStudies"));
+  return items.map((item, i) => ({
+    params: { slug: item.data.id },
+    props: { item, prev: items[i - 1], next: items[i + 1] },
+  }));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { item, prev, next } = Astro.props;
+const { id, title, brief, whatSheDid, output, category, media, relatedReview, relatedServices } =
+  item.data;
+
+const meta = categoryMeta(category);
+const credits = creditsFor(item.data);
+const review = relatedReview ? await getEntry(relatedReview) : undefined;
+const services = await getEntries(relatedServices);
+
+const site = await getEntry("site", "main");
+const positioning = await getEntry("positioning", "main");
+if (!site || !positioning) throw new Error("site/positioning entry 'main' missing");
+const hireLink = await getEntry(positioning.data.cta.primary.link);
+if (!hireLink) throw new Error("positioning.cta.primary.link not found in links");
+
+const videoJsonLd =
+  media.status === "ready"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        name: title,
+        description: brief,
+        thumbnailUrl: new URL(media.poster, Astro.site).href,
+        ...(media.clip && { contentUrl: new URL(media.clip, Astro.site).href }),
+        creator: { "@type": "Person", name: site.data.name.full },
+      }
+    : null;
+---
+
+<PageLayout title={`${title} · ${site.data.name.full}`} description={brief} ogType="article">
+  {videoJsonLd && (
+    <script slot="head" type="application/ld+json" set:html={JSON.stringify(videoJsonLd)} />
+  )}
+
+  <article class="mx-auto max-w-content px-gutter pt-12 pb-section md:pt-16">
+    <nav aria-label="Breadcrumb" class="mb-10 md:mb-14">
+      <a
+        href="/#work"
+        class="group inline-flex items-center gap-2 font-mono text-label text-muted uppercase hover:text-paper"
+      >
+        <Icon
+          name="arrow-right"
+          size="sm"
+          class="rotate-180 motion-safe:transition-transform motion-safe:duration-(--duration-fast) motion-safe:ease-cut motion-safe:group-hover:-translate-x-0.5"
+        />
+        All work
+      </a>
+    </nav>
+
+    <header class="flex flex-col gap-6">
+      <div class="flex flex-wrap items-center gap-2">
+        <Tag variant={meta.track}>{meta.label}</Tag>
+        {item.data.featured && <Tag>Featured</Tag>}
+      </div>
+      <h1
+        class="font-display text-display font-extrabold text-paper"
+        transition:name={`case-${id}`}
+      >
+        {title}
+      </h1>
+
+      {credits.length > 0 && (
+        <dl class="flex flex-wrap gap-x-8 gap-y-3 font-mono text-label uppercase">
+          {credits.map((c) => (
+            <div class="flex flex-col gap-1">
+              <dt class="text-muted">{c.label}</dt>
+              <dd class="text-paper">{c.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <ul class="flex flex-wrap gap-2" aria-label="Services">
+        {services.map((s) => (
+          <Tag as="li" font="sans">
+            {s.data.title}
+          </Tag>
+        ))}
+      </ul>
+    </header>
+
+    <CaseMedia
+      media={media}
+      fallback="placeholder"
+      placeholderLabel="Sample on request"
+      placeholderDescription={`Video sample for "${title}" is available on request`}
+      class="mt-12 md:mt-16"
+    />
+
+    <ol class="mt-section flex flex-col border-t border-line" data-reveal-group>
+      <CaseAct index={1} title="Brief">
+        <p class="max-w-prose text-lead text-paper">{brief}</p>
+      </CaseAct>
+      <CaseAct index={2} title="What she did">
+        <ol class="flex max-w-prose flex-col gap-4">
+          {whatSheDid.map((step, i) => (
+            <li class="flex gap-4 text-body text-paper">
+              <span aria-hidden="true" class="pt-1 font-mono text-label text-muted tabular-nums">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+      </CaseAct>
+      <CaseAct index={3} title="Output">
+        <p class="max-w-prose font-display text-h3 font-semibold text-paper">{output}</p>
+      </CaseAct>
+    </ol>
+
+    {review && (
+      <section aria-labelledby="case-review-title" class="mt-section" data-reveal="cut">
+        <Heading level={2} size="h3" id="case-review-title" class="sr-only">
+          Client review
+        </Heading>
+        <figure class="flex flex-col gap-6 lg:w-3/4">
+          <div class="flex flex-wrap items-center gap-3">
+            <StarRating rating={review.data.rating} size="md" />
+            <span class="font-mono text-label text-muted uppercase">
+              Verbatim from {review.data.source}
+            </span>
+          </div>
+          <blockquote class="font-display text-h2 font-bold text-paper">
+            <p>“{review.data.quote}”</p>
+          </blockquote>
+          <figcaption class="flex flex-col gap-1 text-body-sm text-muted">
+            <span class="font-medium text-paper">{review.data.author}</span>
+            <span>
+              <cite class="not-italic">{review.data.projectTitle}</cite>
+              <span aria-hidden="true"> · </span>
+              <time datetime={review.data.date}>{formatMonth(review.data.date)}</time>
+            </span>
+          </figcaption>
+        </figure>
+      </section>
+    )}
+
+    <Card as="section" track="video" padding="lg" class="mt-section">
+      <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <Heading level={2} size="h3">
+          Need something similar?
+        </Heading>
+        <Button href={hireLink.data.url} external size="lg">
+          {positioning.data.cta.primary.label}
+          <Icon slot="icon" name="arrow-up-right" size="sm" />
+        </Button>
+      </div>
+    </Card>
+
+    {(prev || next) && (
+      <nav aria-label="More case studies" class="mt-16 grid gap-4 md:grid-cols-2">
+        {prev && (
+          <a
+            href={caseHref(prev.data.id)}
+            rel="prev"
+            class="flex flex-col gap-2 rounded-sm border border-line p-5 hover:border-paper hover:bg-panel"
+          >
+            <span class="inline-flex items-center gap-2 font-mono text-label text-muted uppercase">
+              <Icon name="arrow-right" size="sm" class="rotate-180" />
+              Previous
+            </span>
+            <span class="text-lead font-semibold text-paper">{prev.data.title}</span>
+          </a>
+        )}
+        {next && (
+          <a
+            href={caseHref(next.data.id)}
+            rel="next"
+            class="flex flex-col items-end gap-2 rounded-sm border border-line p-5 text-right hover:border-paper hover:bg-panel md:col-start-2"
+          >
+            <span class="inline-flex items-center gap-2 font-mono text-label text-muted uppercase">
+              Next
+              <Icon name="arrow-right" size="sm" />
+            </span>
+            <span class="text-lead font-semibold text-paper">{next.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )}
+  </article>
+</PageLayout>

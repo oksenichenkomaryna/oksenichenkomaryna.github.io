@@ -1,0 +1,85 @@
+---
+/**
+ * About — portrait in a "program monitor" frame + the bio + a "clip properties"
+ * metadata list. Languages render as audio tracks (A1 EN …) with full names visible.
+ */
+import { getEntry } from "astro:content";
+import clsx from "clsx";
+import Heading from "../../ui/Heading.astro";
+import Section from "../../ui/Section.astro";
+import MonitorPhoto from "./MonitorPhoto.astro";
+import LanguageTracks from "./LanguageTracks.astro";
+import photo from "../../../assets/maryna.webp";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "about";
+
+const [site, positioning, toolsGroup] = await Promise.all([
+  getEntry("site", "main"),
+  getEntry("positioning", "main"),
+  getEntry("skills", "tools"),
+]);
+if (!site || !positioning) throw new Error("site/positioning entries missing");
+
+const { location, languages, experienceYears, verified } = site.data;
+
+type Property = { term: string; value: string } | { term: string; languages: string[] };
+
+const properties: Property[] = [
+  { term: "Location", value: `${location.city}, ${location.country}` },
+  { term: "Languages", languages },
+  { term: "Experience", value: `${experienceYears} years` },
+  ...(toolsGroup?.data.note ? [{ term: "Tools", value: toolsGroup.data.note }] : []),
+  ...(verified ? [{ term: "Upwork", value: "Verified" }] : []),
+];
+---
+
+<Section id={sectionId} marker={marker}>
+  <div class="grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-5" data-reveal="cut">
+      <MonitorPhoto
+        src={photo}
+        alt={site.data.photo.alt}
+        caption={`${location.city}, ${location.country}`}
+      />
+    </div>
+
+    <div class="flex flex-col gap-10 lg:col-span-7">
+      <div class="flex flex-col gap-6" data-reveal="cut">
+        <Heading level={2} id={`${sectionId}-title`} eyebrow={site.data.jobTitle}>
+          {site.data.name.full}
+        </Heading>
+        <div class="flex max-w-prose flex-col gap-4 text-body text-muted">
+          {positioning.data.about.map((p, i) => (
+            <p class={clsx(i === 0 && "text-lead text-paper")}>{p}</p>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-sm border border-line bg-panel shadow-panel" data-reveal="cut">
+        <p
+          aria-hidden="true"
+          class="border-b border-line px-5 py-3 font-mono text-label text-muted uppercase"
+        >
+          Clip properties
+        </p>
+        <dl class="divide-y divide-line">
+          {properties.map((prop) => (
+            <div class="flex flex-col gap-2 px-5 py-3 sm:flex-row sm:gap-6">
+              <dt class="font-mono text-label text-muted uppercase sm:w-32 sm:shrink-0 sm:pt-0.5">
+                {prop.term}
+              </dt>
+              <dd class="text-body-sm text-paper">
+                {"languages" in prop ? <LanguageTracks languages={prop.languages} /> : prop.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </div>
+</Section>

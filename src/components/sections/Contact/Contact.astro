@@ -1,0 +1,106 @@
+---
+/**
+ * Contact — the end of the sequence. The playhead reaches the end, an EXPORT bar
+ * renders to 100% and the export "becomes" the Hire on Upwork button.
+ * Signature motion lives in ExportBar (vanilla GSAP, motion-safe only).
+ */
+import { getCollection, getEntry } from "astro:content";
+import Button from "../../ui/Button.astro";
+import Heading from "../../ui/Heading.astro";
+import Icon from "../../ui/Icon.astro";
+import Section from "../../ui/Section.astro";
+import SocialLinks from "../../ui/SocialLinks.astro";
+import Timecode from "../../ui/Timecode.astro";
+import ExportBar from "./ExportBar.astro";
+import { SEQUENCE_RUNTIME_S } from "../../../lib/motion";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "contact";
+
+const [site, positioning, links] = await Promise.all([
+  getEntry("site", "main"),
+  getEntry("positioning", "main"),
+  getCollection("links"),
+]);
+if (!site || !positioning) throw new Error("site/positioning entries missing");
+
+const cta = positioning.data.cta.primary;
+const ctaLink = await getEntry(cta.link);
+if (!ctaLink) throw new Error(`links collection: entry '${cta.link.id}' missing`);
+
+/**
+ * Closing line: the "relief / outcome" alternative (CONTENT.md recommends it for the
+ * final CTA band); falls back to the first alternative, then the main headline.
+ */
+const { alternatives, headline } = positioning.data;
+const closing =
+  alternatives.find((a) => a.headline.startsWith("You hit record"))?.headline ??
+  alternatives[0]?.headline ??
+  headline;
+
+const { rate } = site.data;
+const unitLabel = { hour: "hr", project: "project" } as const;
+const currencySymbol = { USD: "$" } as const;
+const rateText = rate.show
+  ? `${rate.display === "from" ? "from " : ""}${currencySymbol[rate.currency]}${rate.amount}/${unitLabel[rate.unit]}`
+  : undefined;
+
+/** Optional: an `email` entry in links.json renders a mailto line automatically. */
+const email = links.find((l) => l.data.platform === "email");
+const emailAddress = email?.data.url.replace(/^mailto:/, "");
+
+/** Decorative sequence end = the ruler's full runtime. */
+const SEQUENCE_END_S = SEQUENCE_RUNTIME_S;
+---
+
+<Section id={sectionId} marker={marker}>
+  <div class="flex flex-col gap-12 lg:gap-16">
+    <div class="flex flex-col gap-6" data-reveal="cut">
+      <p class="flex items-center gap-3 font-mono text-label text-muted uppercase">
+        <span>End of sequence</span>
+        <span aria-hidden="true" class="h-px w-8 bg-line"></span>
+        <Timecode seconds={SEQUENCE_END_S} tone="playhead" />
+      </p>
+      <Heading level={2} size="display" id={`${sectionId}-title`} class="max-w-4xl">
+        {closing}
+      </Heading>
+    </div>
+
+    <div class="grid items-end gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="flex flex-col gap-6 lg:col-span-7" data-export>
+        <ExportBar />
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6" data-export-cta>
+          <Button href={ctaLink.data.url} variant="primary" size="lg" external>
+            {cta.label}
+            <Icon slot="icon" name="arrow-up-right" size="md" />
+          </Button>
+          <p class="text-body-sm text-muted">
+            {rateText && <span class="font-mono text-label text-paper uppercase">{rateText}</span>}
+            {rateText && <span aria-hidden="true"> · </span>}
+            Send your brief on Upwork.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 lg:col-span-5" data-reveal="cut">
+        <p class="font-mono text-label text-muted uppercase">Find me on</p>
+        <SocialLinks withLabels />
+        {email && emailAddress && (
+          <p class="text-body-sm text-muted">
+            Or email{" "}
+            <a
+              href={email.data.url}
+              class="text-paper underline decoration-line underline-offset-4 hover:decoration-paper"
+            >
+              {emailAddress}
+            </a>
+          </p>
+        )}
+      </div>
+    </div>
+  </div>
+</Section>

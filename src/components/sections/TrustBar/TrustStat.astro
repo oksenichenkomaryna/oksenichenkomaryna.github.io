@@ -1,0 +1,49 @@
+---
+/**
+ * One stat as a "clip label" on the trust track: coloured top edge, mono label,
+ * big tabular number. The number is server-rendered final (never animated from 0).
+ * Must sit inside a <dl>: renders <div><dt/><dd/>…</div>.
+ */
+import clsx from "clsx";
+import StarRating from "../../ui/StarRating.astro";
+
+const sourceVariants = {
+  Upwork: "border-clip-v",
+  Profile: "border-clip-a",
+} as const;
+
+interface Props {
+  label: string;
+  value: number;
+  decimals: number;
+  prefix?: string;
+  suffix?: string;
+  detail?: string;
+  source: keyof typeof sourceVariants;
+  /** Shows decorative stars next to the value (rating). */
+  stars?: boolean;
+}
+
+const { label, value, decimals, prefix, suffix, detail, source, stars = false } = Astro.props;
+const number = value.toFixed(decimals);
+---
+
+<div
+  class={clsx("flex flex-col gap-2 border-t-2 bg-ink px-4 py-5 md:px-5", sourceVariants[source])}
+  data-reveal="cut"
+>
+  <dt class="font-mono text-label text-muted uppercase">{label}</dt>
+  <dd class="flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display text-h2 font-bold text-paper tabular-nums">
+    <span>
+      {prefix}
+      {number}
+      {suffix && <span class="text-h3 text-muted">{suffix}</span>}
+    </span>
+    {stars && (
+      <span aria-hidden="true" class="self-center">
+        <StarRating rating={value} />
+      </span>
+    )}
+  </dd>
+  {detail && <dd class="text-body-sm text-muted">{detail}</dd>}
+</div>

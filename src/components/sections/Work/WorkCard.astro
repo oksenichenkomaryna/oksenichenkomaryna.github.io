@@ -1,0 +1,95 @@
+---
+/**
+ * A bin item: typographic "clip card" with a credit line. The title link is stretched over
+ * the whole card. Featured cards are wider and also show the brief. The title carries
+ * `transition:name` so it match-cuts into the case page h1.
+ */
+import { getEntry } from "astro:content";
+import clsx from "clsx";
+import Card from "../../ui/Card.astro";
+import Icon from "../../ui/Icon.astro";
+import Tag from "../../ui/Tag.astro";
+import CaseMedia from "./CaseMedia.astro";
+import { caseHref, categoryMeta, creditsFor, type CaseStudy } from "./caseStudies";
+
+interface Props {
+  item: CaseStudy;
+}
+
+const { item } = Astro.props;
+const { id, title, brief, output, featured, category, media, relatedReview } = item.data;
+const meta = categoryMeta(category);
+const credits = creditsFor(item.data);
+const review = relatedReview ? await getEntry(relatedReview) : undefined;
+
+const sizeVariants = {
+  featured: { li: "lg:col-span-4", title: "text-h3" },
+  regular: { li: "lg:col-span-3", title: "text-lead" },
+} as const;
+const size = sizeVariants[featured ? "featured" : "regular"];
+---
+
+<li class={clsx("flex", size.li)} data-reveal="cut" data-category={category}>
+  <Card as="article" track={meta.track} padding="none" interactive class="flex w-full flex-col">
+    <CaseMedia
+      media={media}
+      sizes="(min-width: 64rem) 30rem, 100vw"
+      class="rounded-none border-0"
+    />
+
+    <div class="flex grow flex-col gap-5 p-5 md:p-6">
+      <div class="flex flex-wrap items-center gap-2">
+        <Tag variant={meta.track}>{meta.label}</Tag>
+        {featured && <Tag>Featured</Tag>}
+      </div>
+
+      <h3
+        class={clsx("font-display font-semibold text-paper", size.title)}
+        transition:name={`case-${id}`}
+      >
+        <a
+          href={caseHref(id)}
+          class="after:absolute after:inset-0 after:z-(--z-raised) after:rounded-sm focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-playhead"
+        >
+          {title}
+        </a>
+      </h3>
+
+      {featured && <p class="text-body-sm text-muted">{brief}</p>}
+
+      {credits.length > 0 && (
+        <dl class="flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 font-mono text-label uppercase">
+          {credits.map((c) => (
+            <div class="flex flex-col gap-0.5">
+              <dt class="text-muted">{c.label}</dt>
+              <dd class="text-paper">{c.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <p class="text-body-sm text-paper">
+        <span class="mr-2 font-mono text-label text-muted uppercase">Output</span>
+        {output}
+      </p>
+
+      <div class="mt-auto flex items-center justify-between gap-3 pt-1">
+        {review ? (
+          <span class="inline-flex items-center gap-1.5 font-mono text-label whitespace-nowrap text-paper uppercase">
+            <Icon name="star" size="sm" class="text-playhead" />
+            {review.data.rating.toFixed(1)} client review
+          </span>
+        ) : (
+          <span />
+        )}
+        <span
+          aria-hidden="true"
+          class="inline-flex items-center gap-1.5 font-mono text-label whitespace-nowrap text-muted uppercase"
+        >
+          Case study
+          <Icon name="arrow-right" size="sm" />
+        </span>
+      </div>
+    </div>
+  </Card>
+</li>

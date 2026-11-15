@@ -1,0 +1,83 @@
+---
+/**
+ * One review as a subtitle cue: decorative cue number + in/out timecodes on the left,
+ * the verbatim quote as a large caption, attribution in the figcaption.
+ * `id="review-<id>"` lets other sections (Process proof chips) link to the exact quote.
+ */
+import type { CollectionEntry } from "astro:content";
+import StarRating from "../../ui/StarRating.astro";
+import Timecode from "../../ui/Timecode.astro";
+
+interface Props {
+  review: CollectionEntry<"reviews">["data"];
+  /** 1-based cue number. */
+  index: number;
+  cueIn: number;
+  cueOut: number;
+}
+
+const { review, index, cueIn, cueOut } = Astro.props;
+
+const monthFormat = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+// "2024-12" → "Dec 2024"
+const dateLabel = monthFormat.format(new Date(`${review.date}-01T00:00:00Z`));
+const cueNumber = String(index).padStart(2, "0");
+// Visual separator between attribution parts; hidden from screen readers.
+const dot = "text-line";
+---
+
+<figure
+  id={`review-${review.id}`}
+  class="grid scroll-mt-ruler gap-6 border-b border-line py-10 md:grid-cols-12 md:gap-x-10 md:py-14"
+>
+  <div
+    aria-hidden="true"
+    class="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-label text-muted uppercase md:col-span-3 md:row-span-2 md:flex-col md:items-start"
+    data-reveal="cut"
+  >
+    <span class="text-paper">Cue {cueNumber}</span>
+    <span class="flex items-center gap-2">
+      In <Timecode seconds={cueIn} />
+    </span>
+    <span class="flex items-center gap-2">
+      Out <Timecode seconds={cueOut} />
+    </span>
+  </div>
+
+  <blockquote class="md:col-span-9">
+    <!-- [.js-motion_&]: hidden only when JS + motion are on; caption-wipe.ts reveals it.
+         Marks are part of one text node: separate spans/pseudo-elements get spaces or
+         block lines once SplitText splits the quote. The quote itself stays verbatim. -->
+    <p
+      data-caption
+      class="font-display text-h3 font-semibold text-balance text-paper md:text-h2 [.js-motion_&:not([data-caption-done])]:opacity-0"
+    >
+      {`“${review.quote}”`}
+    </p>
+  </blockquote>
+
+  <!-- figcaption must be a direct child of figure: placed in the grid next to the cue meta -->
+  <figcaption
+    class="flex flex-wrap items-center gap-x-3 gap-y-2 text-body-sm text-muted md:col-span-9 md:col-start-4"
+    data-reveal="rise"
+  >
+    <StarRating rating={review.rating} />
+    <span class="font-medium text-paper">{review.author}</span>
+    <span aria-hidden="true" class={dot}>
+      ·
+    </span>
+    <cite class="not-italic">{review.projectTitle}</cite>
+    <span aria-hidden="true" class={dot}>
+      ·
+    </span>
+    <time datetime={review.date}>{dateLabel}</time>
+    <span aria-hidden="true" class={dot}>
+      ·
+    </span>
+    <span class="font-mono text-label uppercase">{review.source}</span>
+  </figcaption>
+</figure>

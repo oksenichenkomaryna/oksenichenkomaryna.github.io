@@ -28,8 +28,72 @@
     ]
   },
   {
-    "id": "social-video-ads",
+    "id": "multicamera-editing",
     "order": 2,
+    "title": "Multicamera editing",
+    "description": "Two or three cameras synced to your best mic track and cut like a show.",
+    "deliverables": [
+      "Camera sync to the quality mic recording",
+      "Angle switching across 2–3 cameras",
+      "Color correction to match cameras",
+      "Audio editing and cleanup"
+    ],
+    "audience": ["podcasters", "brands", "educators"],
+    "relatedSkills": ["Adobe Premiere Pro", "Video Color Correction", "Audio Editing", "Podcast"],
+    "media": {
+      "status": "needs-asset",
+      "request": "15–30 s clip from a 2–3 camera interview edit showing angle switches."
+    },
+    "factBasis": [
+      "FACTS.md › Services 4",
+      "FACTS.md › Work history: multi-angle interview edits (2–3 cameras)"
+    ]
+  },
+  {
+    "id": "online-course-editing",
+    "order": 3,
+    "title": "Online course editing",
+    "description": "Course lessons that are easy to watch, easy to follow and consistent across modules.",
+    "deliverables": [
+      "Lesson edits with text highlights",
+      "Screen captures woven into talking-head footage",
+      "Closed captions",
+      "Batch delivery for multi-lesson courses"
+    ],
+    "audience": ["educators"],
+    "relatedSkills": ["Education", "YouTube", "Video Design", "Adobe Premiere Pro"],
+    "media": {
+      "status": "needs-asset",
+      "request": "One course lesson excerpt with text highlights and captions."
+    },
+    "factBasis": ["FACTS.md › Services 7", "FACTS.md › Work history: 8 × 3-min videos in 3 days"]
+  },
+  {
+    "id": "software-tutorials",
+    "order": 4,
+    "title": "Software & platform tutorials",
+    "description": "Screen recordings turned into clear tutorials your users can actually follow.",
+    "deliverables": [
+      "Screen-capture editing, cut to the steps that matter",
+      "Text highlights and callouts",
+      "Closed captions",
+      "Lower thirds and titles"
+    ],
+    "audience": ["saas", "educators"],
+    "relatedSkills": ["Education", "Corporate Video", "Video Design", "Adobe Premiere Pro"],
+    "media": {
+      "status": "needs-asset",
+      "request": "Excerpt from a software tutorial showing highlights + captions."
+    },
+    "factBasis": [
+      "FACTS.md › Services 6",
+      "FACTS.md › Services 7 (text highlights, screen captures, closed captions)",
+      "FACTS.md › Work history: lower thirds + subtitles"
+    ]
+  },
+  {
+    "id": "social-video-ads",
+    "order": 5,
     "title": "Video ads for social media",
     "description": "Short ads that stop the scroll and show your brand's personality.",
     "deliverables": [
@@ -52,7 +116,7 @@
   },
   {
     "id": "green-screen",
-    "order": 3,
+    "order": 6,
     "title": "Green screen editing",
     "description": "Clean keys and matched color, so your subject sits naturally in the new background.",
     "deliverables": [
@@ -74,30 +138,8 @@
     "factBasis": ["FACTS.md › Services 3", "FACTS.md › Skills: Rotoscoping, Video Color Correction"]
   },
   {
-    "id": "multicamera-editing",
-    "order": 4,
-    "title": "Multicamera editing",
-    "description": "Two or three cameras synced to your best mic track and cut like a show.",
-    "deliverables": [
-      "Camera sync to the quality mic recording",
-      "Angle switching across 2–3 cameras",
-      "Color correction to match cameras",
-      "Audio editing and cleanup"
-    ],
-    "audience": ["podcasters", "brands", "educators"],
-    "relatedSkills": ["Adobe Premiere Pro", "Video Color Correction", "Audio Editing", "Podcast"],
-    "media": {
-      "status": "needs-asset",
-      "request": "15–30 s clip from a 2–3 camera interview edit showing angle switches."
-    },
-    "factBasis": [
-      "FACTS.md › Services 4",
-      "FACTS.md › Work history: multi-angle interview edits (2–3 cameras)"
-    ]
-  },
-  {
     "id": "real-estate-video",
-    "order": 5,
+    "order": 7,
     "title": "Real estate video editing",
     "description": "Property footage edited into a polished video that helps the listing stand out.",
     "deliverables": [
@@ -118,47 +160,5 @@
       "request": "One real-estate edit (or 20–30 s excerpt) + poster frame."
     },
     "factBasis": ["FACTS.md › Services 5", "FACTS.md › Skills"]
-  },
-  {
-    "id": "software-tutorials",
-    "order": 6,
-    "title": "Software & platform tutorials",
-    "description": "Screen recordings turned into clear tutorials your users can actually follow.",
-    "deliverables": [
-      "Screen-capture editing, cut to the steps that matter",
-      "Text highlights and callouts",
-      "Closed captions",
-      "Lower thirds and titles"
-    ],
-    "audience": ["saas", "educators"],
-    "relatedSkills": ["Education", "Corporate Video", "Video Design", "Adobe Premiere Pro"],
-    "media": {
-      "status": "needs-asset",
-      "request": "Excerpt from a software tutorial showing highlights + captions."
-    },
-    "factBasis": [
-      "FACTS.md › Services 6",
-      "FACTS.md › Services 7 (text highlights, screen captures, closed captions)",
-      "FACTS.md › Work history: lower thirds + subtitles"
-    ]
-  },
-  {
-    "id": "online-course-editing",
-    "order": 7,
-    "title": "Online course editing",
-    "description": "Course lessons that are easy to watch, easy to follow and consistent across modules.",
-    "deliverables": [
-      "Lesson edits with text highlights",
-      "Screen captures woven into talking-head footage",
-      "Closed captions",
-      "Batch delivery for multi-lesson courses"
-    ],
-    "audience": ["educators"],
-    "relatedSkills": ["Education", "YouTube", "Video Design", "Adobe Premiere Pro"],
-    "media": {
-      "status": "needs-asset",
-      "request": "One course lesson excerpt with text highlights and captions."
-    },
-    "factBasis": ["FACTS.md › Services 7", "FACTS.md › Work history: 8 × 3-min videos in 3 days"]
   }
 ]

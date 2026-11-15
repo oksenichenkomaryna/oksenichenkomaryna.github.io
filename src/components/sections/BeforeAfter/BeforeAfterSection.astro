@@ -1,0 +1,121 @@
+---
+/**
+ * Before/after — proof of color correction (V1, split monitor) and audio cleanup (A1, A/B).
+ *
+ * Data-driven from ./samples.ts. Only real samples are ever shown:
+ * - at least one sample ready → full section with the ready panel(s);
+ * - none ready → renders nothing, unless `showWhenEmpty` is set: then an honest
+ *   "samples coming soon" variant (disabled audio A/B placeholder + Upwork CTA),
+ *   never a fake color demo.
+ * Gate the section and its ruler marker with `hasBeforeAfter` from ./samples.
+ */
+import { getEntry } from "astro:content";
+import BeforeAfter from "../../ui/BeforeAfter";
+import Button from "../../ui/Button.astro";
+import Heading from "../../ui/Heading.astro";
+import Icon from "../../ui/Icon.astro";
+import Section from "../../ui/Section.astro";
+import TrackPanel from "./TrackPanel.astro";
+import { audioSample, colorSample, hasBeforeAfter } from "./samples";
+
+interface Props {
+  marker?: string;
+  /** Render the "samples coming soon" variant when no sample is ready. Default: render nothing. */
+  showWhenEmpty?: boolean;
+}
+
+const { marker, showWhenEmpty = false } = Astro.props;
+const sectionId = "before-after";
+const relatedCaseId = "podcast-static-cleanup";
+
+const upwork = await getEntry("links", "upwork");
+if (!upwork) throw new Error("links collection: entry 'upwork' missing");
+const relatedCase = await getEntry("caseStudies", relatedCaseId);
+if (!relatedCase) throw new Error(`caseStudies collection: entry '${relatedCaseId}' missing`);
+
+const readyCount = [colorSample, audioSample].filter((s) => s.status === "ready").length;
+
+/** Two panels share the row 7/5; a single one gets a calmer, narrower column. */
+const spanVariants = {
+  pair: { video: "lg:col-span-7", audio: "lg:col-span-5" },
+  single: { video: "lg:col-span-8", audio: "lg:col-span-8" },
+} as const;
+const spans = spanVariants[readyCount > 1 ? "pair" : "single"];
+
+const linkClass =
+  "inline-flex items-center gap-2 self-start text-body-sm text-paper underline decoration-line underline-offset-4 hover:decoration-paper";
+---
+
+{hasBeforeAfter ? (
+  <Section id={sectionId} marker={marker}>
+    <div class="max-w-prose" data-reveal="cut">
+      <Heading level={2} id={`${sectionId}-title`} eyebrow="Program monitor · A/B">
+        Before & after
+      </Heading>
+      <p class="mt-6 text-lead text-muted">
+        The same frame and the same audio, before and after the edit.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-10">
+      {colorSample.status === "ready" && (
+        <TrackPanel track="video" title="Color correction" class={spans.video}>
+          <BeforeAfter
+            client:visible
+            mode="image"
+            labels={["BEFORE", "AFTER"]}
+            before={colorSample.before}
+            after={colorSample.after}
+            caption={colorSample.note}
+          />
+        </TrackPanel>
+      )}
+
+      {audioSample.status === "ready" && (
+        <TrackPanel track="audio" title="Audio cleanup" class={spans.audio}>
+          <BeforeAfter
+            client:visible
+            mode="audio"
+            before={audioSample.before}
+            after={audioSample.after}
+          />
+          <Fragment slot="footer">
+            <p class="font-mono text-label text-muted">{audioSample.note}</p>
+            <a href={`/work/${relatedCase.id}/`} class={linkClass}>
+              <span>
+                <span class="text-muted">Case study — </span>
+                {relatedCase.data.title}
+              </span>
+              <Icon name="arrow-right" size="sm" />
+            </a>
+          </Fragment>
+        </TrackPanel>
+      )}
+    </div>
+  </Section>
+) : (
+  showWhenEmpty && (
+    <Section id={sectionId} marker={marker}>
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+        <div class="flex flex-col gap-6 lg:col-span-5" data-reveal="cut">
+          <Heading level={2} id={`${sectionId}-title`} eyebrow="Program monitor · A/B">
+            Before & after
+          </Heading>
+          <p class="max-w-prose text-lead text-muted">
+            Before/after samples are being prepared — ask me for examples on Upwork.
+          </p>
+          <div>
+            <Button href={upwork.data.url} external variant="secondary">
+              Ask for examples on Upwork
+              <Icon slot="icon" name="arrow-up-right" size="sm" />
+            </Button>
+          </div>
+        </div>
+
+        <TrackPanel track="audio" title="Audio cleanup" class="lg:col-span-7">
+          <BeforeAfter client:visible mode="audio" />
+        </TrackPanel>
+      </div>
+    </Section>
+  )
+)}

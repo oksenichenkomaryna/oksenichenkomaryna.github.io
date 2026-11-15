@@ -52,6 +52,8 @@ export const trigger = {
   reveal: "top 85%",
   section: "top top",
   sectionEnd: "bottom top",
+  /** End of a scroll-scrubbed sequence inside a section. */
+  scrubEnd: "bottom center",
 } as const;
 
 /** Media queries for gsap.matchMedia — keep in sync with --breakpoint-* tokens. */
@@ -64,3 +66,6 @@ export const mq = {
 
 export type EaseToken = keyof typeof ease;
 export type DurationToken = keyof typeof duration;
+
+/** Virtual runtime (seconds) the homepage "plays" across — ruler timecode, end-of-sequence marks. */
+export const SEQUENCE_RUNTIME_S = 90;

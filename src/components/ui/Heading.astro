@@ -4,6 +4,7 @@
  * An `eyebrow` renders as a mono label inside an <hgroup>.
  */
 import clsx from "clsx";
+import type { HTMLAttributes } from "astro/types";
 
 const sizeVariants = {
   display: "text-display font-extrabold",
@@ -14,7 +15,8 @@ const sizeVariants = {
 const tags = { 1: "h1", 2: "h2", 3: "h3" } as const;
 const defaultSize = { 1: "display", 2: "h2", 3: "h3" } as const;
 
-interface Props {
+/** Extra attributes (e.g. data-reveal="beat") are forwarded to the h-tag. */
+interface Props extends Omit<HTMLAttributes<"h2">, "class" | "id"> {
   level: keyof typeof tags;
   size?: keyof typeof sizeVariants;
   eyebrow?: string;
@@ -23,7 +25,7 @@ interface Props {
   class?: string;
 }
 
-const { level, size = defaultSize[level], eyebrow, id, class: className } = Astro.props;
+const { level, size = defaultSize[level], eyebrow, id, class: className, ...rest } = Astro.props;
 const Tag = tags[level];
 const headingClass = clsx("font-display text-paper", sizeVariants[size], className);
 ---
@@ -31,12 +33,12 @@ const headingClass = clsx("font-display text-paper", sizeVariants[size], classNa
 {eyebrow ? (
   <hgroup class="flex flex-col gap-3">
     <p class="font-mono text-label text-muted uppercase">{eyebrow}</p>
-    <Tag id={id} class={headingClass}>
+    <Tag id={id} class={headingClass} {...rest}>
       <slot />
     </Tag>
   </hgroup>
 ) : (
-  <Tag id={id} class={headingClass}>
+  <Tag id={id} class={headingClass} {...rest}>
     <slot />
   </Tag>
 )}

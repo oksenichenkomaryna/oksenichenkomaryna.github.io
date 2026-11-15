@@ -1,0 +1,122 @@
+---
+/**
+ * Home hero — owns the page's only <h1>. Copy, proof and links come from content
+ * collections (positioning, site, stats, links, services). Signature visual: a program
+ * monitor + mini timeline (HeroMonitor/HeroTimeline) choreographed by hero-sequence.ts.
+ * Pass `reel` once a showreel loop exists; the monitor then plays it (poster = LCP).
+ */
+import { getCollection, getEntry } from "astro:content";
+import clsx from "clsx";
+import Button from "../../ui/Button.astro";
+import Icon from "../../ui/Icon.astro";
+import StarRating from "../../ui/StarRating.astro";
+import HeroMonitor, { type HeroReel } from "./HeroMonitor.astro";
+import HeroTimeline from "./HeroTimeline.astro";
+import { heroGate, titleCards } from "./hero-data";
+
+interface Props {
+  reel?: HeroReel;
+}
+
+const { reel } = Astro.props;
+
+const [positioning, site, stats, services] = await Promise.all([
+  getEntry("positioning", "main"),
+  getEntry("site", "main"),
+  getCollection("stats"),
+  getCollection("services"),
+]);
+if (!positioning || !site) throw new Error("Hero: positioning/site entry 'main' missing");
+
+const { eyebrow, headline, subline, cta } = positioning.data;
+const upwork = await getEntry(cta.primary.link);
+if (!upwork) throw new Error(`Hero: link '${cta.primary.link.id}' missing`);
+
+// Title-card labels are microcopy; make sure each still maps to a real service.
+const serviceIds = new Set(services.map((s) => s.id));
+const orphan = titleCards.find((c) => !serviceIds.has(c.service));
+if (orphan) throw new Error(`Hero: title card '${orphan.word}' maps to unknown service`);
+
+const stat = (id: string) => {
+  const entry = stats.find((s) => s.id === id);
+  if (!entry) throw new Error(`Hero: stat '${id}' missing`);
+  return entry.data;
+};
+const rating = stat("rating");
+const jobSuccess = stat("job-success");
+const fmt = (s: typeof rating) =>
+  `${s.prefix ?? ""}${s.value.toFixed(s.decimals)}${s.suffix ?? ""}`;
+
+const unitShort = { hour: "hr", project: "project" } as const;
+const { rate } = site.data;
+const rateLabel = rate.show
+  ? `${rate.display === "from" ? "from " : ""}$${rate.amount}/${unitShort[rate.unit]}`
+  : null;
+---
+
+<section id="top" aria-labelledby="top-title" class="relative overflow-x-clip bg-ink" data-hero>
+  <div class="mx-auto max-w-content px-gutter pt-8 pb-12 md:pt-12 md:pb-16 lg:pt-10 lg:pb-14">
+    <p class="flex items-center gap-3 font-mono text-label text-muted uppercase">
+      <span class="size-1.5 shrink-0 rounded-pill bg-playhead" aria-hidden="true"></span>
+      {eyebrow}
+    </p>
+
+    <h1
+      id="top-title"
+      class="mt-5 font-display text-display font-extrabold text-paper"
+      data-reveal="beat"
+      data-reveal-now
+    >
+      {headline}
+    </h1>
+
+    <div class="mt-8 grid gap-10 md:mt-10 lg:grid-cols-12 lg:items-end lg:gap-12">
+      <div class="flex flex-col gap-7 lg:col-span-6">
+        <p class={clsx("max-w-prose text-lead text-muted", heroGate)} data-hero-in="rise">
+          {subline}
+        </p>
+
+        <div class={clsx("flex flex-col gap-3 sm:flex-row", heroGate)} data-hero-in="rise">
+          <Button href={upwork.data.url} external size="lg" class="w-full sm:w-auto">
+            {cta.primary.label}
+            <Icon slot="icon" name="arrow-up-right" size="sm" />
+          </Button>
+          <Button href={cta.secondary.href} variant="secondary" size="lg" class="w-full sm:w-auto">
+            {cta.secondary.label}
+            <Icon slot="icon" name="arrow-right" size="sm" />
+          </Button>
+        </div>
+
+        <div
+          class={clsx(
+            "flex flex-wrap items-center gap-x-5 gap-y-2 text-body-sm text-muted",
+            heroGate,
+          )}
+          data-hero-in="rise"
+        >
+          <span class="flex items-center gap-2">
+            <StarRating rating={rating.value} />
+            <span>
+              <span class="font-semibold text-paper tabular-nums">{fmt(rating)}</span>{" "}
+              {rating.detail} on {rating.source}
+            </span>
+          </span>
+          <span>
+            <span class="font-semibold text-paper tabular-nums">{fmt(jobSuccess)}</span>{" "}
+            {jobSuccess.label}
+          </span>
+          {rateLabel && <span class="font-mono text-label uppercase">{rateLabel}</span>}
+        </div>
+      </div>
+
+      <HeroMonitor reel={reel} class="lg:col-span-6" />
+    </div>
+
+    <HeroTimeline class="mt-4 md:mt-6" />
+  </div>
+</section>
+
+<script>
+  import { initHeroSequence } from "./hero-sequence";
+  initHeroSequence();
+</script>

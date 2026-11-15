@@ -1,0 +1,61 @@
+---
+/**
+ * Services — 7 clips stacked on video tracks, ordered by buyer priority.
+ * Typographic only (no footage). Entrance: staggered one-frame cuts.
+ */
+import { getCollection } from "astro:content";
+import Section from "../../ui/Section.astro";
+import Heading from "../../ui/Heading.astro";
+import ServiceClip from "./ServiceClip.astro";
+import { sortByOrder } from "./services";
+import { caseHref, sortForGrid } from "../Work/caseStudies";
+
+interface Props {
+  marker?: string;
+}
+
+const { marker } = Astro.props;
+const sectionId = "services";
+
+const services = sortByOrder(await getCollection("services"));
+const cases = sortForGrid(await getCollection("caseStudies"));
+
+/** First (featured-first) case study that lists this service. */
+function relatedCase(serviceId: string): { href: string; title: string } | undefined {
+  const match = cases.find((c) => c.data.relatedServices.some((r) => r.id === serviceId));
+  return match && { href: caseHref(match.data.id), title: match.data.title };
+}
+
+/** Ruler ticks over the clip lanes (decorative). */
+const ticks = Array.from({ length: 61 }, (_, i) => i);
+---
+
+<Section id={sectionId} {marker}>
+  <div class="mb-12 flex flex-col gap-4 md:mb-16">
+    <Heading level={2} id={`${sectionId}-title`}>
+      What I edit
+    </Heading>
+  </div>
+
+  <div aria-hidden="true" class="hidden md:grid md:grid-cols-12">
+    <span class="border-r border-b border-line pb-2 font-mono text-label text-muted uppercase md:col-span-3 lg:col-span-2">
+      Tracks
+    </span>
+    <svg
+      viewBox="0 0 600 8"
+      preserveAspectRatio="none"
+      class="h-2 w-full self-end border-b border-line text-line md:col-span-9 lg:col-span-10"
+      fill="currentColor"
+    >
+      {ticks.map((i) => (
+        <rect x={i * 10 - 0.5} y={i % 5 === 0 ? 0 : 4} width="1" height={i % 5 === 0 ? 8 : 4} />
+      ))}
+    </svg>
+  </div>
+
+  <ol class="flex flex-col gap-8 md:gap-0" data-reveal-group>
+    {services.map((service, i) => (
+      <ServiceClip service={service} track={i + 1} related={relatedCase(service.data.id)} />
+    ))}
+  </ol>
+</Section>

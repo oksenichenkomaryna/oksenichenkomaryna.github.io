@@ -1,0 +1,39 @@
+---
+/** schema.org Person JSON-LD for the homepage (lead-owned). Data from content collections only. */
+import { getCollection, getEntry } from "astro:content";
+
+const site = await getEntry("site", "main");
+if (!site) throw new Error("site entry 'main' missing");
+const links = await getCollection("links");
+
+const { name, jobTitle, location, languages, upworkTitle } = site.data;
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: name.full,
+  alternateName: name.short,
+  jobTitle,
+  description: upworkTitle,
+  url: new URL("/", Astro.site).href,
+  image: new URL("/og.png", Astro.site).href,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: location.city,
+    addressCountry: location.country,
+  },
+  knowsLanguage: languages,
+  // Skill names exactly as listed on her Upwork profile (FACTS.md › Skills).
+  knowsAbout: [
+    "Audio Post Production",
+    "Audio Editing",
+    "Video Color Correction",
+    "Podcast",
+    "Adobe Premiere Pro",
+    "After Effects",
+  ],
+  sameAs: links.map((l) => l.data.url),
+} as const;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(person)} />

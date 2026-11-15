@@ -35,5 +35,10 @@ function stop(): void {
 export function initSmoothScroll(): void {
   document.addEventListener("astro:page-load", start);
   document.addEventListener("astro:before-swap", stop);
-  window.matchMedia(mq.reduced).addEventListener("change", (e) => (e.matches ? stop() : start()));
+  window.matchMedia(mq.reduced).addEventListener("change", (e) => {
+    // Keep the pre-paint flag in sync so content gated on html.js-motion never stays hidden.
+    document.documentElement.classList.toggle("js-motion", !e.matches);
+    if (e.matches) stop();
+    else start();
+  });
 }
