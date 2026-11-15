@@ -82,9 +82,10 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
         Sections
         <Icon name="arrow-right" size="sm" class="rotate-90 group-open/menu:-rotate-90" />
       </summary>
+      <!-- arbitrary value: keep the panel inside the viewport at 320px (minus both gutters) -->
       <nav
         aria-label="Sections"
-        class="absolute top-full right-0 mt-3 w-56 rounded-sm border border-line bg-panel p-2 shadow-panel"
+        class="absolute top-full right-0 mt-3 w-56 max-w-[calc(100vw-2*var(--spacing-gutter))] rounded-sm border border-line bg-panel p-2 shadow-panel"
       >
         <ol class="flex flex-col">
           {chapters.map((c) => (
@@ -157,6 +158,15 @@ const chapterHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
           if (e.key !== "Escape" || !menu.open) return;
           menu.open = false;
           menu.querySelector("summary")?.focus();
+        },
+        { signal },
+      );
+      // Close when keyboard focus leaves the menu.
+      menu.addEventListener(
+        "focusout",
+        (e) => {
+          if (!(e.relatedTarget instanceof Node && menu.contains(e.relatedTarget)))
+            menu.open = false;
         },
         { signal },
       );

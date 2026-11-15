@@ -65,8 +65,10 @@ function onAnchorClick(e: MouseEvent): void {
 
   // replaceState: keeps ClientRouter's history entries (and Back) intact.
   history.replaceState(history.state, "", hit.link.hash);
-  // Move focus for keyboard / screen-reader users (e.g. skip link → main[tabindex=-1]).
-  if (hit.target.hasAttribute("tabindex")) hit.target.focus({ preventScroll: true });
+  // Move focus into the target so the next Tab continues from there (WCAG 2.4.3).
+  // Sections aren't focusable by default → make them programmatically focusable.
+  if (!hit.target.hasAttribute("tabindex")) hit.target.setAttribute("tabindex", "-1");
+  hit.target.focus({ preventScroll: true });
 }
 
 export function initSmoothScroll(): void {
